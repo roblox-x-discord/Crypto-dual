@@ -3,7 +3,8 @@
 // DB stored outside public_html: domain_root/cryptoduel.db
 define('DB_PATH',      dirname(dirname(dirname(__FILE__))) . '/cryptoduel.db');
 define('SECRET_KEY',   sha1(__FILE__ . 'cryptoduel_secret_v1'));
-define('HOUSE_EDGE',   0.05);          // 5% house cut
+define('HOUSE_EDGE',   0.05);          // 5% house cut (games)
+define('DEPOSIT_FEE',   0.20);          // 20% fee on deposits (NOWPayments)
 define('WELCOME_BTC',  0.001);         // 0.001 BTC welcome bonus
 define('MIN_BET',      0.0001);        // minimum bet
 define('MAX_BET',      0.5);           // maximum bet
@@ -32,3 +33,12 @@ define('COIN_MAP', json_encode([
     'matic-network'=>['sym'=>'MATIC','name'=>'Polygon', 'color'=>'purple'],
     'chainlink'   => ['sym'=>'LINK','name'=>'Chainlink','color'=>'blue'],
 ]));
+
+// ── NOWPayments Configuration ──────────────────────────────────────────────────
+define('NOWPAYMENTS_API_KEY',     'MFRRCC0-HXE4KRG-M41DA76-WZN8A71');
+define('NOWPAYMENTS_IPN_SECRET',   'xqNmCMqPBVuhGnW4v9lpNAxpAoakXbml');
+define('NOWPAYMENTS_API_URL',     'https://api.nowpayments.io/v1');
+define('NOWPAYMENTS_IPN_URL',     'https://' . ($_SERVER['HTTP_HOST'] ?? 'crypto-dashboard-ui-73d56b9a-3480.omnicoder.app') . '/api/ipn.php');
+
+// Supported currencies for deposits
+define('DEPOSIT_CURRENCIES', ['BTC', 'LTC', 'ETH', 'USDT', 'USDC', 'DOGE']);

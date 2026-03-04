@@ -22,11 +22,13 @@ function initTables(SQLite3 $db): void {
         email           TEXT    UNIQUE NOT NULL COLLATE NOCASE,
         password_hash   TEXT    NOT NULL,
         balance_btc     REAL    DEFAULT 0.0,
+        balance_usd     REAL    DEFAULT 0.0,
         wallet_address  TEXT,
         level           INTEGER DEFAULT 1,
         xp              REAL    DEFAULT 0,
         total_wagered   REAL    DEFAULT 0,
         total_won       REAL    DEFAULT 0,
+        total_deposited REAL    DEFAULT 0.0,
         wins            INTEGER DEFAULT 0,
         losses          INTEGER DEFAULT 0,
         last_demo_claim INTEGER DEFAULT 0,
@@ -96,11 +98,31 @@ function initTables(SQLite3 $db): void {
         created_at      INTEGER DEFAULT (strftime('%s','now'))
     );
 
+    CREATE TABLE IF NOT EXISTS nowpayments_transactions (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id         INTEGER NOT NULL REFERENCES users(id),
+        payment_id      TEXT,
+        np_payment_id   TEXT,
+        currency        TEXT    NOT NULL,
+        amount          REAL    NOT NULL,
+        amount_usd      REAL    NOT NULL,
+        fee_amount      REAL    DEFAULT 0.0,
+        credited_amount REAL    DEFAULT 0.0,
+        pay_address     TEXT,
+        status          TEXT    DEFAULT 'pending',
+        ipn_received_at INTEGER,
+        created_at      INTEGER DEFAULT (strftime('%s','now')),
+        updated_at      INTEGER DEFAULT (strftime('%s','now'))
+    );
+
     CREATE INDEX IF NOT EXISTS idx_bets_status  ON bets(status);
     CREATE INDEX IF NOT EXISTS idx_bets_creator ON bets(creator_id);
     CREATE INDEX IF NOT EXISTS idx_chat_created ON chat_messages(created_at);
     CREATE INDEX IF NOT EXISTS idx_tx_user      ON transactions(user_id);
     CREATE INDEX IF NOT EXISTS idx_ttt_status   ON tictactoe(status);
+    CREATE INDEX IF NOT EXISTS idx_np_user      ON nowpayments_transactions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_np_status    ON nowpayments_transactions(status);
+    CREATE INDEX IF NOT EXISTS idx_np_payment   ON nowpayments_transactions(payment_id);
     ");
 }
 

@@ -192,46 +192,41 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
   </div>
   <!-- Deposit -->
   <div id="wpanel-deposit" class="p-5">
-   <p class="text-slate-400 text-sm text-center mb-4">Send BTC to your unique deposit address</p>
-   <div class="flex justify-center mb-4">
-    <div class="p-3 bg-white rounded-2xl shadow-lg">
-     <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" width="140" height="140">
-      <rect width="140" height="140" fill="white"/>
-      <rect x="8" y="8" width="38" height="38" rx="3" fill="#0f172a"/><rect x="13" y="13" width="28" height="28" rx="2" fill="white"/><rect x="18" y="18" width="18" height="18" fill="#0f172a"/>
-      <rect x="94" y="8" width="38" height="38" rx="3" fill="#0f172a"/><rect x="99" y="13" width="28" height="28" rx="2" fill="white"/><rect x="104" y="18" width="18" height="18" fill="#0f172a"/>
-      <rect x="8" y="94" width="38" height="38" rx="3" fill="#0f172a"/><rect x="13" y="99" width="28" height="28" rx="2" fill="white"/><rect x="18" y="104" width="18" height="18" fill="#0f172a"/>
-      <rect x="54" y="8" width="6" height="6" fill="#0f172a"/><rect x="64" y="8" width="6" height="6" fill="#0f172a"/><rect x="74" y="18" width="6" height="6" fill="#0f172a"/>
-      <rect x="54" y="28" width="6" height="6" fill="#0f172a"/><rect x="74" y="28" width="6" height="6" fill="#0f172a"/><rect x="54" y="48" width="6" height="6" fill="#0f172a"/>
-      <rect x="64" y="48" width="6" height="6" fill="#0f172a"/><rect x="74" y="48" width="6" height="6" fill="#0f172a"/>
-      <rect x="8" y="54" width="6" height="6" fill="#0f172a"/><rect x="18" y="54" width="6" height="6" fill="#0f172a"/>
-      <rect x="28" y="54" width="6" height="6" fill="#0f172a"/><rect x="44" y="54" width="6" height="6" fill="#0f172a"/>
-      <rect x="54" y="54" width="6" height="6" fill="#0f172a"/><rect x="84" y="54" width="6" height="6" fill="#0f172a"/>
-      <rect x="104" y="54" width="6" height="6" fill="#0f172a"/><rect x="124" y="54" width="6" height="6" fill="#0f172a"/>
-      <rect x="8" y="64" width="6" height="6" fill="#0f172a"/><rect x="44" y="64" width="6" height="6" fill="#0f172a"/>
-      <rect x="64" y="64" width="6" height="6" fill="#0f172a"/><rect x="84" y="64" width="6" height="6" fill="#0f172a"/>
-      <rect x="114" y="64" width="6" height="6" fill="#0f172a"/>
-      <rect x="8" y="74" width="6" height="6" fill="#0f172a"/><rect x="28" y="74" width="6" height="6" fill="#0f172a"/>
-      <rect x="54" y="74" width="6" height="6" fill="#0f172a"/><rect x="74" y="74" width="6" height="6" fill="#0f172a"/>
-      <rect x="94" y="74" width="6" height="6" fill="#0f172a"/><rect x="124" y="74" width="6" height="6" fill="#0f172a"/>
-      <rect x="54" y="94" width="6" height="6" fill="#0f172a"/><rect x="74" y="94" width="6" height="6" fill="#0f172a"/>
-      <rect x="94" y="94" width="6" height="6" fill="#0f172a"/><rect x="114" y="94" width="6" height="6" fill="#0f172a"/>
-      <rect x="54" y="104" width="6" height="6" fill="#0f172a"/><rect x="84" y="104" width="6" height="6" fill="#0f172a"/>
-      <rect x="104" y="104" width="6" height="6" fill="#0f172a"/><rect x="54" y="114" width="6" height="6" fill="#0f172a"/>
-      <rect x="74" y="114" width="6" height="6" fill="#0f172a"/><rect x="124" y="114" width="6" height="6" fill="#0f172a"/>
-      <rect x="54" y="124" width="6" height="6" fill="#0f172a"/><rect x="64" y="124" width="6" height="6" fill="#0f172a"/>
-      <rect x="104" y="124" width="6" height="6" fill="#0f172a"/>
-     </svg>
+   <p class="text-slate-400 text-sm text-center mb-4">Deposit crypto — receive 80% after 20% platform fee</p>
+
+   <!-- Deposit options -->
+   <div class="space-y-3 mb-5">
+    <div>
+     <label class="text-slate-400 text-xs font-medium mb-2 block">Select Currency</label>
+     <select id="depositCurrency" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500" onchange="updateDepositPreview()">
+      <option value="BTC">BTC — Bitcoin</option>
+      <option value="LTC">LTC — Litecoin</option>
+      <option value="ETH">ETH — Ethereum</option>
+      <option value="USDT">USDT — Tether</option>
+      <option value="USDC">USDC — USD Coin</option>
+      <option value="DOGE">DOGE — Dogecoin</option>
+     </select>
     </div>
+    <div>
+     <label class="text-slate-400 text-xs font-medium mb-2 block">Amount</label>
+     <input id="depositAmount" type="number" step="0.01" min="1" placeholder="Enter amount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500" oninput="updateDepositPreview()"/>
+    </div>
+    <div class="bg-slate-800 rounded-xl p-4 text-xs space-y-2">
+     <div class="flex justify-between"><span class="text-slate-400">You deposit</span><span class="text-white font-bold" id="depDeposit">—</span></div>
+     <div class="flex justify-between"><span class="text-yellow-400">Platform fee (20%)</span><span class="text-yellow-400 font-bold" id="depFee">—</span></div>
+     <div class="flex justify-between border-t border-slate-700 pt-2"><span class="text-green-400">You receive</span><span class="text-green-400 font-bold" id="depReceive">—</span></div>
+    </div>
+    <button onclick="createDeposit()" id="createDepBtn" class="w-full py-3 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">Create Deposit</button>
    </div>
-   <p class="text-slate-400 text-xs text-center mb-2">Your BTC deposit address</p>
-   <div class="flex items-center gap-2 bg-slate-800 rounded-xl p-3 mb-4">
-    <span class="text-purple-300 text-xs font-mono flex-1 truncate" id="walletAddr">Loading...</span>
-    <button onclick="copyAddr()" class="text-slate-400 hover:text-purple-400 shrink-0">
-     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-    </button>
+
+   <!-- Active deposits -->
+   <div id="activeDeposits" class="hidden">
+    <p class="text-slate-400 text-xs font-semibold mb-3">Active Deposits</p>
+    <div id="depositsList" class="space-y-2"></div>
    </div>
-   <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 text-xs text-yellow-300 leading-relaxed">
-    <strong>Demo platform</strong> — addresses are display only. Use "Free BTC" tab to get play funds.
+
+   <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 text-xs text-yellow-300 leading-relaxed mt-4">
+    <strong>Important:</strong> 20% fee applies to all deposits. Minimum deposit varies by currency. Funds are credited after payment confirmation.
    </div>
   </div>
   <!-- Withdraw -->
@@ -645,6 +640,12 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
 const APP = {
   loggedIn: <?= $isLoggedIn ? 'true' : 'false' ?>,
   user:     <?= $user ? json_encode(publicUser($user)) : 'null' ?>,
+  rawUser:   <?= $user ? json_encode([
+    'id' => (int)$user['id'],
+    'balance_btc' => (float)$user['balance_btc'],
+    'balance_usd' => (float)($user['balance_usd'] ?? 0),
+    'username' => $user['username']
+  ]) : 'null' ?>,
   prices:   {},
   lastChatId: 0,
   activeGameId: null,
@@ -685,15 +686,38 @@ document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e
 function requireAuth(fn) { if (!APP.loggedIn) { openModal('authModal'); } else { fn(); } }
 
 function balanceStr(b) { return parseFloat(b).toFixed(5); }
-function updateAllBalances(b) {
-  const s = balanceStr(b);
-  if (APP.user) APP.user.balance = b;
-  ['hBalance','mobBalance','sBal','createBal','wBal','wdrawBal'].forEach(id => {
+function updateAllBalances(btc, usd = null) {
+  if (usd === null && APP.rawUser) usd = APP.rawUser.balance_usd;
+  if (usd === null) usd = 0;
+
+  const s = balanceStr(btc);
+  const u = usd.toFixed(2);
+
+  if (APP.user) APP.user.balance = btc;
+  if (APP.rawUser) { APP.rawUser.balance_btc = btc; APP.rawUser.balance_usd = usd; }
+
+  // Update all balance displays
+  ['hBalance','mobBalance','sBal','createBal'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = id === 'sBal' ? parseFloat(b).toFixed(4) : (id === 'wdrawBal' ? s + ' BTC' : s + (id === 'wBal' ? '' : ' BTC'));
-    if (id === 'wBal' && el) el.textContent = s;
-    if (id === 'sBal' && el) el.textContent = parseFloat(b).toFixed(4);
+    if (el) {
+      if (id === 'sBal') {
+        el.textContent = parseFloat(btc).toFixed(4) + ' BTC (~$' + u + ')';
+      } else {
+        el.textContent = s + ' BTC';
+      }
+    }
   });
+
+  // Wallet specific
+  const wEl = document.getElementById('wBal');
+  if (wEl) wEl.textContent = s + ' BTC (~$' + u + ')';
+
+  const wdEl = document.getElementById('wdrawBal');
+  if (wdEl) wdEl.textContent = s + ' BTC (~$' + u + ')';
+
+  // Stats display
+  const sbEl = document.getElementById('sBal');
+  if (sbEl) sbEl.textContent = parseFloat(btc).toFixed(4) + ' BTC / ~$' + u;
 }
 
 function timeAgo(ts) {
@@ -1181,7 +1205,9 @@ async function sendChat(from) {
 async function doRain() {
   const r = await apiFetch('/api/chat.php?action=rain', {method:'POST'});
   if (!r.success) { toast(r.error, 'red'); return; }
-  updateAllBalances(r.balance);
+  if (r.balance_btc !== undefined) {
+    updateAllBalances(r.balance_btc, r.balance_usd);
+  }
   toast(`🌧️ Rained on ${r.recipients} players!`, 'blue');
   loadChat();
 }
@@ -1196,17 +1222,88 @@ function wTab(tab) {
     document.getElementById('wtab-'   + t).classList.toggle('active', t === tab);
   });
   if (tab === 'history') loadTxHistory();
+  if (tab === 'deposit') {
+    updateDepositPreview();
+    if (APP.loggedIn) loadActiveDeposits();
+  }
 }
 
 async function loadWalletData() {
   if (!APP.loggedIn) return;
-  if (APP.user) {
-    const b = balanceStr(APP.user.balance);
-    document.getElementById('wBal').textContent     = b;
-    document.getElementById('wdrawBal').textContent = b + ' BTC';
+  // Load fresh balance from server
+  const br = await apiFetch('/api/wallet.php?action=balance');
+  if (br.success) {
+    updateAllBalances(br.balance_btc, br.balance_usd);
+    APP.prices = APP.prices || {};
+    APP.prices['BTC'] = { price: br.btc_price };
   }
-  const r = await apiFetch('/api/wallet.php?action=address');
-  if (r.success) document.getElementById('walletAddr').textContent = r.address;
+  // Load active deposits
+  await loadActiveDeposits();
+}
+
+async function loadActiveDeposits() {
+  if (!APP.loggedIn) return;
+  const r = await apiFetch('/api/wallet.php?action=deposits');
+  const container = document.getElementById('activeDeposits');
+  const list = document.getElementById('depositsList');
+  if (!r.success || !r.deposits.length) {
+    if (container) container.classList.add('hidden');
+    return;
+  }
+  container.classList.remove('hidden');
+  list.innerHTML = r.deposits.map(d => {
+    const statusColors = {pending:'text-yellow-400',waiting:'text-yellow-400',confirming:'text-blue-400',finished:'text-green-400',confirmed:'text-green-400',failed:'text-red-400'};
+    const sc = statusColors[d.status] || 'text-slate-400';
+    return `<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1e293b;border-radius:14px;border:1px solid rgba(168,85,247,0.2)">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(168,85,247,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <span style="font-size:18px">${d.currency === 'BTC' ? '₿' : (d.currency === 'LTC' ? 'Ł' : (d.currency === 'ETH' ? 'Ξ' : '$'))}</span>
+      </div>
+      <div style="flex:1">
+        <p style="font-weight:600;font-size:13px;color:white">${d.amount.toFixed(6)} ${d.currency}</p>
+        <p style="font-size:11px;color:#94a3b8">You receive: <span style="color:#22c55e">${d.receive.toFixed(6)} ${d.currency}</span></p>
+      </div>
+      <div style="text-align:right">
+        <p style="font-size:11px;${sc};font-weight:600">${d.status}</p>
+        ${d.pay_address ? `<button onclick="navigator.clipboard.writeText('${d.pay_address}');toast('Address copied!','green')" style="font-size:9px;padding:3px 7px;background:#334155;border-radius:6px;color:#cbd5e1;margin-top:4px">Copy Address</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateDepositPreview() {
+  const curr = document.getElementById('depositCurrency').value;
+  const amt = parseFloat(document.getElementById('depositAmount').value) || 0;
+  const depEl = document.getElementById('depDeposit');
+  const feeEl = document.getElementById('depFee');
+  const recEl = document.getElementById('depReceive');
+  if (depEl) depEl.textContent = amt + ' ' + curr;
+  if (feeEl) feeEl.textContent = (amt * 0.20).toFixed(6) + ' ' + curr;
+  if (recEl) recEl.textContent = (amt * 0.80).toFixed(6) + ' ' + curr;
+}
+
+async function createDeposit() {
+  const curr = document.getElementById('depositCurrency').value;
+  const amt = parseFloat(document.getElementById('depositAmount').value);
+  if (!amt || amt <= 0) { toast('Please enter a valid amount', 'red'); return; }
+
+  const btn = document.getElementById('createDepBtn');
+  btn.textContent = 'Creating...';
+  btn.disabled = true;
+
+  const r = await apiFetch(`/api/wallet.php?action=create_deposit&currency=${curr}&amount=${amt}`);
+  btn.textContent = 'Create Deposit';
+  btn.disabled = false;
+
+  if (!r.success) { toast(r.error, 'red'); return; }
+
+  toast(`Deposit created! Send ${r.amount} ${r.currency} to the address.`, 'green', 6000);
+
+  if (r.payment_url) {
+    window.open(r.payment_url, '_blank');
+  }
+
+  await loadActiveDeposits();
+  await loadWalletData();
 }
 
 async function loadTxHistory() {
@@ -1251,7 +1348,7 @@ async function doWithdraw() {
   const r = await apiFetch('/api/wallet.php?action=withdraw', {method:'POST', body: JSON.stringify({address:addr, amount_btc:amt})});
   if (!r.success) { err.textContent = r.error; err.classList.remove('hidden'); return; }
   toast(r.message, 'green');
-  updateAllBalances(r.balance);
+  updateAllBalances(r.balance_btc, r.balance_usd);
   wTab('history');
 }
 async function claimDemo() {
@@ -1263,8 +1360,8 @@ async function claimDemo() {
   msg.classList.remove('hidden');
   if (r.success) {
     msg.style.cssText = 'background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:10px';
-    msg.textContent = r.message + ' New balance: ' + r.balance.toFixed(5) + ' BTC';
-    updateAllBalances(r.balance);
+    msg.textContent = r.message + ' New balance: ' + r.balance_btc.toFixed(5) + ' BTC (~$' + r.balance_usd.toFixed(2) + ')';
+    updateAllBalances(r.balance_btc, r.balance_usd);
   } else {
     msg.style.cssText = 'background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:12px;padding:10px';
     msg.textContent = r.error;
