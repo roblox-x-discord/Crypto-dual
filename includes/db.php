@@ -81,10 +81,26 @@ function initTables(SQLite3 $db): void {
 
     INSERT OR IGNORE INTO price_cache (id) VALUES (1);
 
+    CREATE TABLE IF NOT EXISTS tictactoe (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        creator_id      INTEGER NOT NULL REFERENCES users(id),
+        joiner_id       INTEGER REFERENCES users(id),
+        amount_btc      REAL    NOT NULL,
+        board           TEXT    DEFAULT '---------',
+        current_turn_id INTEGER REFERENCES users(id),
+        creator_sym     TEXT    DEFAULT 'X',
+        status          TEXT    DEFAULT 'waiting',
+        winner_id       INTEGER REFERENCES users(id),
+        server_seed     TEXT    NOT NULL DEFAULT '',
+        last_move_at    INTEGER DEFAULT (strftime('%s','now')),
+        created_at      INTEGER DEFAULT (strftime('%s','now'))
+    );
+
     CREATE INDEX IF NOT EXISTS idx_bets_status  ON bets(status);
     CREATE INDEX IF NOT EXISTS idx_bets_creator ON bets(creator_id);
     CREATE INDEX IF NOT EXISTS idx_chat_created ON chat_messages(created_at);
     CREATE INDEX IF NOT EXISTS idx_tx_user      ON transactions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_ttt_status   ON tictactoe(status);
     ");
 }
 
