@@ -124,7 +124,6 @@ function initTables(SQLite3 $db): void {
     CREATE INDEX IF NOT EXISTS idx_np_status    ON nowpayments_transactions(status);
     CREATE INDEX IF NOT EXISTS idx_np_payment   ON nowpayments_transactions(payment_id);
 
-    // Sports Betting Tables
     CREATE TABLE IF NOT EXISTS sports_matches (
         id              INTEGER PRIMARY KEY AUTOINCREMENT,
         sport_type      TEXT    NOT NULL,
