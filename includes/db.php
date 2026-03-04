@@ -126,6 +126,7 @@ function initTables(SQLite3 $db): void {
 
     CREATE TABLE IF NOT EXISTS sports_matches (
         id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        api_fixture_id  INTEGER UNIQUE,
         sport_type      TEXT    NOT NULL,
         home_team       TEXT    NOT NULL,
         away_team       TEXT    NOT NULL,
@@ -153,6 +154,7 @@ function initTables(SQLite3 $db): void {
     );
 
     CREATE INDEX IF NOT EXISTS idx_sports_status   ON sports_matches(status);
+    CREATE INDEX IF NOT EXISTS idx_sports_fixture   ON sports_matches(api_fixture_id);
     CREATE INDEX IF NOT EXISTS idx_sports_bets_user ON sports_bets(user_id);
     CREATE INDEX IF NOT EXISTS idx_sports_bets_match ON sports_bets(match_id);
     ");

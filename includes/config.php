@@ -36,9 +36,13 @@ define('COIN_MAP', json_encode([
 
 // ── Direct Deposit Configuration ───────────────────────────────────────────────────
 define('DEPOSIT_ADDRESS_BTC', 'bc1qy0cma0nhur3kggfg8uh8tmsu4kn2mces2gvp9h');
-define('DEPOSIT_ADDRESS_LTC', 'ltc1...'); // Add your LTC address here if needed
+define('DEPOSIT_ADDRESS_LTC', 'LagW6oTkbG1aBLjwnzPVZEPoWWPhW2HRFn');
 define('BLOCKCYPHER_API_TOKEN', '93bc14c58e82449bbf31224fbc8c42c6');
 define('DISCORD_WEBHOOK_URL', 'https://discord.com/api/webhooks/1478752146806673491/joLkgboLZJW9NlFFJ9zkU4duxBOZJrDluHs2ZGEvfLeyEulGJWoriAnI1Y0TteNVToyQ');
+
+// ── API-Football Configuration ───────────────────────────────────────────────────────
+define('API_FOOTBALL_KEY', '5e360ed133f7959b1bf329c063554784');
+define('API_FOOTBALL_URL', 'https://v3.football.api-sports.io');
 
 // Supported currencies for direct deposit
 define('DEPOSIT_CURRENCIES', ['BTC', 'LTC']);

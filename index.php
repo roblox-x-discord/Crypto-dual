@@ -1270,14 +1270,17 @@ function filterSports(sport) {
 }
 
 async function loadSportsMatches() {
-  const url = currentSportFilter === 'all'
-    ? '/api/sports.php?action=matches'
-    : `/api/sports.php?action=matches&sport=${currentSportFilter}`;
-
-  const r = await apiFetch(url);
   const grid = document.getElementById('matchesGrid');
+  grid.innerHTML = `
+    <div class="col-span-full flex flex-col items-center py-14 text-slate-500">
+      <div class="w-10 h-10 border-2 border-purple-500/40 border-t-purple-500 rounded-full spin mb-3"></div>
+      <p class="font-semibold text-base mb-1">Loading live matches...</p>
+    </div>`;
 
-  if (!r.success || !r.matches.length) {
+  // Fetch from API-Football
+  const r = await apiFetch('/api/football.php?action=fixtures&days=7');
+
+  if (!r.success || !r.fixtures.length) {
     grid.innerHTML = `
       <div class="col-span-full flex flex-col items-center py-14 text-slate-500">
         <div style="font-size:3rem" class="mb-3">⚽</div>
@@ -1287,11 +1290,11 @@ async function loadSportsMatches() {
     return;
   }
 
-  grid.innerHTML = r.matches.map(m => {
+  grid.innerHTML = r.fixtures.map(m => {
     const isUpcoming = m.status === 'upcoming';
     const isLive = m.status === 'live';
     const isFinished = m.status === 'finished';
-    const sportIcon = m.sport_type === 'FOOTBALL' ? '⚽' : '🏀';
+    const sportIcon = '⚽';
     const matchTime = new Date(m.match_time * 1000);
     const timeStr = matchTime.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -1299,7 +1302,7 @@ async function loadSportsMatches() {
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
           <span class="text-xl">${sportIcon}</span>
-          <span class="text-xs font-semibold ${m.sport_type === 'FOOTBALL' ? 'text-green-400' : 'text-orange-400'}">${m.sport_type}</span>
+          <span class="text-xs font-semibold text-green-400">FOOTBALL</span>
           ${m.league_name ? `<span class="text-slate-500 text-xs">• ${m.league_name}</span>` : ''}
         </div>
         <span class="text-xs font-semibold ${isUpcoming ? 'text-yellow-400' : isLive ? 'text-green-400' : 'text-slate-400'}">${isUpcoming ? 'UPCOMING' : isLive ? '🔴 LIVE' : 'FINISHED'}</span>
@@ -1322,7 +1325,7 @@ async function loadSportsMatches() {
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline mr-1"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           ${timeStr}
         </div>
-        <button onclick="openBetModal(${m.id}, '${m.home_team}', '${m.away_team}')" class="w-full py-2.5 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">
+        <button onclick="openBetModal(${m.id}, '${escapeHtml(m.home_team)}', '${escapeHtml(m.away_team)}')" class="w-full py-2.5 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">
           Place Bet
         </button>
       ` : isFinished ? `
@@ -1330,10 +1333,21 @@ async function loadSportsMatches() {
           ${m.winner === 'draw' ? '🤝 It\'s a Draw!' : `🏆 ${m.winner === 'home' ? m.home_team : m.away_team} Wins!`}
         </div>
       ` : `
-        <div class="text-center text-xs text-red-400 font-semibold">🔴 In Progress</div>
+        <div class="text-center text-xs text-red-400 font-semibold">🔴 Live • ${m.home_score} - ${m.away_score}</div>
       `}
     </div>`;
   }).join('');
+
+  // Auto-refresh live matches every 30 seconds
+  setTimeout(() => {
+    if (APP.section === 'sports') loadSportsMatches();
+  }, 30000);
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 function openBetModal(matchId, homeTeam, awayTeam) {
@@ -1576,8 +1590,8 @@ function selectDepositCurrency(currency) {
   if (addrEl) {
     if (currency === 'BTC') {
       addrEl.value = 'bc1qy0cma0nhur3kggfg8uh8tmsu4kn2mces2gvp9h';
-    } else {
-      addrEl.value = 'ltc1...'; // Update with your LTC address
+    } else if (currency === 'LTC') {
+      addrEl.value = 'LagW6oTkbG1aBLjwnzPVZEPoWWPhW2HRFn';
     }
   }
 }
