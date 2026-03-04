@@ -113,6 +113,33 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
 .nav-item:hover{background:rgba(168,85,247,.1);color:#c4b5fd}
 .nav-item.active{background:rgba(168,85,247,.15);color:#a855f7}
 .nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:28px;background:#a855f7;border-radius:0 4px 4px 0}
+
+/* ── Mobile centering ── */
+@media(max-width:1023px){
+  .main-col{margin:0;padding-bottom:80px}
+  .layout{flex-direction:column}
+  .toast-stack{top:auto;bottom:80px;right:8px;left:8px}
+  .toast{max-width:calc(100% - 16px)}
+  /* Center main content on tablet/mobile */
+  main{max-width:640px;margin:0 auto;padding-left:16px;padding-right:16px}
+}
+@media(max-width:768px){
+  .section{padding:12px 8px}
+  .card{border-radius:12px}
+  /* Ensure modal is full screen on mobile with proper centering */
+  .modal-box{margin:0;max-width:100%;border-radius:20px 20px 0 0;position:fixed;bottom:0;left:0;right:0;height:auto;max-height:85vh}
+  .modal-box .p-5 {padding:16px}
+  /* Center content on mobile with tighter spacing */
+  main{padding:8px;max-width:100%}
+  /* Smaller gaps on mobile */
+  .grid{gap:8px !important}
+  .grid.grid-cols-2{display:grid;grid-template-columns:repeat(2,1fr) !important;gap:8px}
+  .grid.grid-cols-4{display:grid;grid-template-columns:repeat(2,1fr) !important;gap:8px}
+  /* Table horizontal scroll on mobile */
+  table{min-width:500px}
+  /* Tighter card spacing on mobile */
+  .card p, .card div{line-height:1.4}
+}
 </style>
 </head>
 <body>
@@ -188,33 +215,28 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
    <button onclick="wTab('deposit')"  class="tab-btn active flex-1" id="wtab-deposit">Deposit</button>
    <button onclick="wTab('withdraw')" class="tab-btn flex-1" id="wtab-withdraw">Withdraw</button>
    <button onclick="wTab('history')"  class="tab-btn flex-1" id="wtab-history">History</button>
-   <button onclick="wTab('demo')"     class="tab-btn flex-1" id="wtab-demo">Free BTC</button>
   </div>
   <!-- Deposit -->
   <div id="wpanel-deposit" class="p-5">
-   <p class="text-slate-400 text-sm text-center mb-4">Deposit crypto — receive 80% after 20% platform fee</p>
+   <p class="text-slate-400 text-sm text-center mb-4">Deposit Bitcoin — receive 80% after 20% platform fee</p>
 
    <!-- Deposit options -->
    <div class="space-y-3 mb-5">
-    <div>
-     <label class="text-slate-400 text-xs font-medium mb-2 block">Select Currency</label>
-     <select id="depositCurrency" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500" onchange="updateDepositPreview()">
-      <option value="BTC">BTC — Bitcoin</option>
-      <option value="LTC">LTC — Litecoin</option>
-      <option value="ETH">ETH — Ethereum</option>
-      <option value="USDT">USDT — Tether</option>
-      <option value="USDC">USDC — USD Coin</option>
-      <option value="DOGE">DOGE — Dogecoin</option>
-     </select>
+    <div class="bg-slate-800 rounded-xl p-4 flex items-center justify-center gap-3 mb-4">
+     <span class="text-orange-400 font-black text-2xl">₿</span>
+     <div>
+      <p class="text-white font-bold">Bitcoin (BTC)</p>
+      <p class="text-slate-400 text-xs">Fast & secure deposits</p>
+     </div>
     </div>
     <div>
-     <label class="text-slate-400 text-xs font-medium mb-2 block">Amount</label>
-     <input id="depositAmount" type="number" step="0.01" min="1" placeholder="Enter amount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500" oninput="updateDepositPreview()"/>
+     <label class="text-slate-400 text-xs font-medium mb-2 block">Amount (BTC)</label>
+     <input id="depositAmount" type="number" step="0.00001" min="0.0001" placeholder="0.00000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500" oninput="updateDepositPreview()"/>
     </div>
     <div class="bg-slate-800 rounded-xl p-4 text-xs space-y-2">
-     <div class="flex justify-between"><span class="text-slate-400">You deposit</span><span class="text-white font-bold" id="depDeposit">—</span></div>
-     <div class="flex justify-between"><span class="text-yellow-400">Platform fee (20%)</span><span class="text-yellow-400 font-bold" id="depFee">—</span></div>
-     <div class="flex justify-between border-t border-slate-700 pt-2"><span class="text-green-400">You receive</span><span class="text-green-400 font-bold" id="depReceive">—</span></div>
+     <div class="flex justify-between"><span class="text-slate-400">You deposit</span><span class="text-white font-bold" id="depDeposit">— BTC</span></div>
+     <div class="flex justify-between"><span class="text-yellow-400">Platform fee (20%)</span><span class="text-yellow-400 font-bold" id="depFee">— BTC</span></div>
+     <div class="flex justify-between border-t border-slate-700 pt-2"><span class="text-green-400">You receive</span><span class="text-green-400 font-bold" id="depReceive">— BTC</span></div>
     </div>
     <button onclick="createDeposit()" id="createDepBtn" class="w-full py-3 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">Create Deposit</button>
    </div>
@@ -225,8 +247,8 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
     <div id="depositsList" class="space-y-2"></div>
    </div>
 
-   <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 text-xs text-yellow-300 leading-relaxed mt-4">
-    <strong>Important:</strong> 20% fee applies to all deposits. Minimum deposit varies by currency. Funds are credited after payment confirmation.
+   <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 text-xs text-blue-300 leading-relaxed mt-4">
+    <strong>Deposits via NOWPayments:</strong> Send Bitcoin to the generated address. You'll receive 80% after confirmation. Minimum: 0.0001 BTC.
    </div>
   </div>
   <!-- Withdraw -->
@@ -249,18 +271,6 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
   <!-- History -->
   <div id="wpanel-history" class="p-4 hidden">
    <div id="txList" class="space-y-2"><div class="text-slate-500 text-sm text-center py-8">Loading...</div></div>
-  </div>
-  <!-- Demo / Free BTC -->
-  <div id="wpanel-demo" class="p-5 hidden">
-   <div class="text-center mb-6">
-    <div class="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
-     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-    </div>
-    <h3 class="text-white font-bold text-lg mb-1">Daily Free BTC</h3>
-    <p class="text-slate-400 text-sm">Claim <span class="text-green-400 font-bold">0.0005 BTC</span> every 24 hours to keep playing!</p>
-   </div>
-   <div id="demoMsg" class="hidden mb-4 p-3 rounded-xl text-sm text-center font-semibold"></div>
-   <button onclick="claimDemo()" id="claimBtn" class="w-full py-3 bg-green-600 hover:bg-green-500 rounded-xl text-white font-bold text-sm transition-colors">Claim 0.0005 BTC Now</button>
   </div>
  </div>
 </div>
@@ -397,7 +407,7 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
   </header>
 
   <!-- ── SECTIONS ── -->
-  <main class="flex-1 p-3 sm:p-4 lg:p-6 pb-24 lg:pb-6">
+  <main class="flex-1 p-3 sm:p-4 lg:p-6 pb-24 lg:pb-6 max-w-5xl mx-auto w-full">
 
    <!-- LOBBY -->
    <div class="section active" id="section-lobby">
@@ -412,7 +422,7 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
      </button>
     </div>
     <!-- Stats -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
      <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Open Games</p><p class="text-white font-black text-2xl" id="sOpen">—</p></div>
      <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Players Online</p><p class="text-green-400 font-black text-2xl" id="sOnline">—</p></div>
      <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Total Games</p><p class="text-purple-400 font-black text-2xl" id="sTotal">—</p></div>
@@ -420,7 +430,7 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
     </div>
     <!-- Open Games -->
     <h2 class="text-base font-bold text-white mb-3">Waiting for Challengers</h2>
-    <div id="lobbyGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+    <div id="lobbyGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
      <div class="col-span-full flex flex-col items-center py-12 text-slate-500">
       <div class="w-10 h-10 border-2 border-purple-500/40 border-t-purple-500 rounded-full spin mb-3"></div>
       Loading games...
@@ -1217,7 +1227,7 @@ function closeChatDrawer() { document.getElementById('chatDrawer').classList.rem
 
 // ── Wallet ───────────────────────────────────────────────────────────────────
 function wTab(tab) {
-  ['deposit','withdraw','history','demo'].forEach(t => {
+  ['deposit','withdraw','history'].forEach(t => {
     document.getElementById('wpanel-' + t).classList.toggle('hidden', t !== tab);
     document.getElementById('wtab-'   + t).classList.toggle('active', t === tab);
   });
@@ -1271,32 +1281,31 @@ async function loadActiveDeposits() {
 }
 
 function updateDepositPreview() {
-  const curr = document.getElementById('depositCurrency').value;
   const amt = parseFloat(document.getElementById('depositAmount').value) || 0;
+  const curr = 'BTC';
   const depEl = document.getElementById('depDeposit');
   const feeEl = document.getElementById('depFee');
   const recEl = document.getElementById('depReceive');
-  if (depEl) depEl.textContent = amt + ' ' + curr;
-  if (feeEl) feeEl.textContent = (amt * 0.20).toFixed(6) + ' ' + curr;
-  if (recEl) recEl.textContent = (amt * 0.80).toFixed(6) + ' ' + curr;
+  if (depEl) depEl.textContent = amt.toFixed(8) + ' ' + curr;
+  if (feeEl) feeEl.textContent = (amt * 0.20).toFixed(8) + ' ' + curr;
+  if (recEl) recEl.textContent = (amt * 0.80).toFixed(8) + ' ' + curr;
 }
 
 async function createDeposit() {
-  const curr = document.getElementById('depositCurrency').value;
   const amt = parseFloat(document.getElementById('depositAmount').value);
-  if (!amt || amt <= 0) { toast('Please enter a valid amount', 'red'); return; }
+  if (!amt || amt <= 0.00001) { toast('Minimum deposit: 0.00001 BTC', 'red'); return; }
 
   const btn = document.getElementById('createDepBtn');
   btn.textContent = 'Creating...';
   btn.disabled = true;
 
-  const r = await apiFetch(`/api/wallet.php?action=create_deposit&currency=${curr}&amount=${amt}`);
+  const r = await apiFetch(`/api/wallet.php?action=create_deposit&currency=BTC&amount=${amt}`);
   btn.textContent = 'Create Deposit';
   btn.disabled = false;
 
   if (!r.success) { toast(r.error, 'red'); return; }
 
-  toast(`Deposit created! Send ${r.amount} ${r.currency} to the address.`, 'green', 6000);
+  toast(`Deposit created! Send ${r.amount} BTC to the address.`, 'green', 6000);
 
   if (r.payment_url) {
     window.open(r.payment_url, '_blank');
@@ -1350,22 +1359,6 @@ async function doWithdraw() {
   toast(r.message, 'green');
   updateAllBalances(r.balance_btc, r.balance_usd);
   wTab('history');
-}
-async function claimDemo() {
-  const btn = document.getElementById('claimBtn');
-  const msg = document.getElementById('demoMsg');
-  btn.textContent = 'Claiming...'; btn.disabled = true;
-  const r = await apiFetch('/api/wallet.php?action=claim_demo', {method:'POST'});
-  btn.textContent = 'Claim 0.0005 BTC Now'; btn.disabled = false;
-  msg.classList.remove('hidden');
-  if (r.success) {
-    msg.style.cssText = 'background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:10px';
-    msg.textContent = r.message + ' New balance: ' + r.balance_btc.toFixed(5) + ' BTC (~$' + r.balance_usd.toFixed(2) + ')';
-    updateAllBalances(r.balance_btc, r.balance_usd);
-  } else {
-    msg.style.cssText = 'background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:12px;padding:10px';
-    msg.textContent = r.error;
-  }
 }
 function copyAddr() {
   const addr = document.getElementById('walletAddr').textContent;

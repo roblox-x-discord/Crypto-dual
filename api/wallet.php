@@ -196,21 +196,6 @@ if ($method === 'GET' && $action === 'history') {
 if ($method !== 'POST') jsonError('Method not allowed', 405);
 $body = json_decode(file_get_contents('php://input'), true) ?? $_POST;
 
-// ── Claim demo funds ──────────────────────────────────────────────────────────
-if ($action === 'claim_demo') {
-    $lastClaim = (int)$u['last_demo_claim'];
-    $cooldown  = DEMO_COOLDOWN;
-    if ((time() - $lastClaim) < $cooldown) {
-        $wait = $cooldown - (time() - $lastClaim);
-        jsonError("Next claim available in " . gmdate('H\h i\m', $wait));
-    }
-    $bonus  = 0.0005; // 0.0005 BTC per daily claim
-    $newBal = round((float)$u['balance_btc'] + $bonus, 8);
-    $db->exec("UPDATE users SET balance_btc=$newBal, last_demo_claim=" . time() . " WHERE id={$u['id']}");
-    recordTx($db, (int)$u['id'], 'bonus', $bonus, $newBal, 'confirmed', 'Daily demo claim');
-    jsonOk(['balance_btc' => $newBal, 'balance_usd' => (float)($u['balance_usd'] ?? 0), 'claimed' => $bonus, 'message' => 'Demo funds added!']);
-}
-
 // ── Request withdrawal (simulated — queues for review) ────────────────────────
 if ($action === 'withdraw') {
     $address = trim($body['address'] ?? '');
