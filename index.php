@@ -220,7 +220,7 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
   </div>
   <!-- Deposit -->
   <div id="wpanel-deposit" class="p-5">
-   <p class="text-slate-400 text-sm text-center mb-4">Deposit Crypto — receive 80% after 20% platform fee</p>
+   <p class="text-slate-400 text-sm text-center mb-4">Direct Deposit — Send BTC/LTC to receive 80% after 20% platform fee</p>
 
    <!-- Currency Selector -->
    <div class="grid grid-cols-2 gap-2 mb-4">
@@ -240,28 +240,42 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
     </button>
    </div>
 
-   <!-- Deposit options -->
-   <div class="space-y-3 mb-5">
-    <div>
-     <label class="text-slate-400 text-xs font-medium mb-2 block">Amount (<span id="depositCurrencyLabel">BTC</span>)</label>
-     <input id="depositAmount" type="number" step="0.00001" min="0.0001" placeholder="0.00000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500" oninput="updateDepositPreview()"/>
+   <!-- Deposit Address Display -->
+   <div class="bg-slate-800 rounded-xl p-4 mb-4">
+    <label class="text-slate-400 text-xs font-medium mb-2 block">Send your <span id="depositCurrencyName">Bitcoin</span> to this address:</label>
+    <div class="flex items-center gap-2">
+     <input id="depositAddress" type="text" readonly value="bc1qy0cma0nhur3kggfg8uh8tmsu4kn2mces2gvp9h" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-xs font-mono">
+     <button onclick="copyDepositAddress()" class="px-3 py-2 bg-purple-500/20 border border-purple-500/40 rounded-lg text-purple-400 text-xs font-semibold hover:bg-purple-500/30">
+      Copy
+     </button>
     </div>
-    <div class="bg-slate-800 rounded-xl p-4 text-xs space-y-2">
-     <div class="flex justify-between"><span class="text-slate-400">You deposit</span><span class="text-white font-bold" id="depDeposit">— BTC</span></div>
-     <div class="flex justify-between"><span class="text-yellow-400">Platform fee (20%)</span><span class="text-yellow-400 font-bold" id="depFee">— BTC</span></div>
-     <div class="flex justify-between border-t border-slate-700 pt-2"><span class="text-green-400">You receive</span><span class="text-green-400 font-bold" id="depReceive">— BTC</span></div>
-    </div>
-    <button onclick="createDeposit()" id="createDepBtn" class="w-full py-3 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">Create Deposit</button>
+    <p class="text-slate-500 text-xs mt-2">Minimum deposit: 0.0001 BTC / 0.001 LTC • 1+ confirmation required</p>
    </div>
 
-   <!-- Active deposits -->
-   <div id="activeDeposits" class="hidden">
-    <p class="text-slate-400 text-xs font-semibold mb-3">Active Deposits</p>
-    <div id="depositsList" class="space-y-2"></div>
+   <!-- Verify Transaction Section -->
+   <div class="border-t border-slate-700 pt-4 mt-4">
+    <p class="text-slate-400 text-xs font-semibold mb-3">After sending, verify your transaction to receive credits:</p>
+    <div class="space-y-3">
+     <div>
+      <label class="text-slate-400 text-xs font-medium mb-2 block">Transaction ID (TXID)</label>
+      <input id="txidInput" type="text" placeholder="Paste your transaction hash here..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono text-xs">
+     </div>
+     <button onclick="verifyTransaction()" id="verifyBtn" class="w-full py-3 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">
+      Verify & Credit Deposit
+     </button>
+     <div id="verifyResult" class="hidden p-3 rounded-xl text-sm"></div>
+    </div>
    </div>
 
    <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 text-xs text-blue-300 leading-relaxed mt-4">
-    <strong>Deposits via NOWPayments:</strong> Send crypto to the generated address. You'll receive 80% after confirmation. Minimum: 0.0001 BTC / 0.001 LTC.
+    <strong>How to deposit:</strong>
+    <ol class="list-decimal list-inside mt-2 space-y-1">
+     <li>Send BTC/LTC to the address above</li>
+     <li>Wait for 1+ blockchain confirmation</li>
+     <li>Copy your Transaction ID (TXID) from your wallet or block explorer</li>
+     <li>Paste the TXID above and click "Verify & Credit"</li>
+     <li>You'll receive 80% of your deposit (20% platform fee)</li>
+    </ol>
    </div>
   </div>
   <!-- Withdraw -->
@@ -1555,12 +1569,88 @@ function selectDepositCurrency(currency) {
     btcBtn.className = 'flex items-center justify-center gap-2 p-3 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all hover:border-slate-600';
   }
 
-  // Update label
-  const label = document.getElementById('depositCurrencyLabel');
-  if (label) label.textContent = currency;
+  // Update currency name and address
+  const nameEl = document.getElementById('depositCurrencyName');
+  const addrEl = document.getElementById('depositAddress');
+  if (nameEl) nameEl.textContent = currency === 'BTC' ? 'Bitcoin' : 'Litecoin';
+  if (addrEl) {
+    if (currency === 'BTC') {
+      addrEl.value = 'bc1qy0cma0nhur3kggfg8uh8tmsu4kn2mces2gvp9h';
+    } else {
+      addrEl.value = 'ltc1...'; // Update with your LTC address
+    }
+  }
+}
 
-  // Update preview
-  updateDepositPreview();
+function copyDepositAddress() {
+  const addrEl = document.getElementById('depositAddress');
+  if (addrEl) {
+    navigator.clipboard.writeText(addrEl.value);
+    toast('Address copied to clipboard!', 'green');
+  }
+}
+
+async function verifyTransaction() {
+  if (!APP.loggedIn) {
+    openModal('authModal');
+    return;
+  }
+
+  const txid = document.getElementById('txidInput').value.trim();
+  const resultEl = document.getElementById('verifyResult');
+  const btn = document.getElementById('verifyBtn');
+
+  if (!txid) {
+    resultEl.className = 'p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm';
+    resultEl.textContent = 'Please enter a Transaction ID';
+    resultEl.classList.remove('hidden');
+    return;
+  }
+
+  btn.textContent = 'Verifying...';
+  btn.disabled = true;
+  resultEl.classList.add('hidden');
+
+  try {
+    const r = await apiFetch('/api/wallet.php?action=verify_transaction', {
+      method: 'POST',
+      body: JSON.stringify({
+        txid: txid,
+        currency: APP.depositCurrency || 'BTC',
+      }),
+    });
+
+    if (!r.success) {
+      resultEl.className = 'p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm';
+      resultEl.innerHTML = `<strong>Error:</strong> ${r.error}`;
+      resultEl.classList.remove('hidden');
+    } else {
+      resultEl.className = 'p-3 bg-green-500/10 border border-green-500/30 rounded-xl text-green-400 text-sm';
+      resultEl.innerHTML = `
+        <strong>✅ Deposit Verified!</strong><br>
+        <span class="text-xs">
+        Deposited: ${r.original_amount} ${APP.depositCurrency || 'BTC'}<br>
+        You received: ${r.credited_amount} ${APP.depositCurrency || 'BTC'} (80% after 20% fee)
+        </span>
+      `;
+      resultEl.classList.remove('hidden');
+
+      // Update balance
+      updateAllBalances(r.balance_btc, r.balance_usd);
+
+      // Clear input
+      document.getElementById('txidInput').value = '';
+
+      toast(`Successfully deposited ${r.credited_amount} ${APP.depositCurrency || 'BTC'}!`, 'green', 5000);
+    }
+  } catch (e) {
+    resultEl.className = 'p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm';
+    resultEl.textContent = 'Failed to verify transaction. Please try again.';
+    resultEl.classList.remove('hidden');
+  }
+
+  btn.textContent = 'Verify & Credit Deposit';
+  btn.disabled = false;
 }
 
 function wTab(tab) {
@@ -1569,10 +1659,6 @@ function wTab(tab) {
     document.getElementById('wtab-'   + t).classList.toggle('active', t === tab);
   });
   if (tab === 'history') loadTxHistory();
-  if (tab === 'deposit') {
-    updateDepositPreview();
-    if (APP.loggedIn) loadActiveDeposits();
-  }
 }
 
 async function loadWalletData() {
@@ -1584,77 +1670,6 @@ async function loadWalletData() {
     APP.prices = APP.prices || {};
     APP.prices['BTC'] = { price: br.btc_price };
   }
-  // Load active deposits
-  await loadActiveDeposits();
-}
-
-async function loadActiveDeposits() {
-  if (!APP.loggedIn) return;
-  const r = await apiFetch('/api/wallet.php?action=deposits');
-  const container = document.getElementById('activeDeposits');
-  const list = document.getElementById('depositsList');
-  if (!r.success || !r.deposits.length) {
-    if (container) container.classList.add('hidden');
-    return;
-  }
-  container.classList.remove('hidden');
-  list.innerHTML = r.deposits.map(d => {
-    const statusColors = {pending:'text-yellow-400',waiting:'text-yellow-400',confirming:'text-blue-400',finished:'text-green-400',confirmed:'text-green-400',failed:'text-red-400'};
-    const sc = statusColors[d.status] || 'text-slate-400';
-    return `<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1e293b;border-radius:14px;border:1px solid rgba(168,85,247,0.2)">
-      <div style="width:36px;height:36px;border-radius:10px;background:rgba(168,85,247,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <span style="font-size:18px">${d.currency === 'BTC' ? '₿' : (d.currency === 'LTC' ? 'Ł' : (d.currency === 'ETH' ? 'Ξ' : '$'))}</span>
-      </div>
-      <div style="flex:1">
-        <p style="font-weight:600;font-size:13px;color:white">${d.amount.toFixed(6)} ${d.currency}</p>
-        <p style="font-size:11px;color:#94a3b8">You receive: <span style="color:#22c55e">${d.receive.toFixed(6)} ${d.currency}</span></p>
-      </div>
-      <div style="text-align:right">
-        <p style="font-size:11px;${sc};font-weight:600">${d.status}</p>
-        ${d.pay_address ? `<button onclick="navigator.clipboard.writeText('${d.pay_address}');toast('Address copied!','green')" style="font-size:9px;padding:3px 7px;background:#334155;border-radius:6px;color:#cbd5e1;margin-top:4px">Copy Address</button>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function updateDepositPreview() {
-  const amt = parseFloat(document.getElementById('depositAmount').value) || 0;
-  const curr = APP.depositCurrency || 'BTC';
-  const depEl = document.getElementById('depDeposit');
-  const feeEl = document.getElementById('depFee');
-  const recEl = document.getElementById('depReceive');
-  const decimals = curr === 'LTC' ? 6 : 8;
-  if (depEl) depEl.textContent = amt.toFixed(decimals) + ' ' + curr;
-  if (feeEl) feeEl.textContent = (amt * 0.20).toFixed(decimals) + ' ' + curr;
-  if (recEl) recEl.textContent = (amt * 0.80).toFixed(decimals) + ' ' + curr;
-}
-
-async function createDeposit() {
-  const curr = APP.depositCurrency || 'BTC';
-  const amt = parseFloat(document.getElementById('depositAmount').value);
-  const minAmt = curr === 'BTC' ? 0.00001 : 0.001;
-  const currName = curr === 'BTC' ? 'BTC' : 'LTC';
-
-  if (!amt || amt < minAmt) { toast(`Minimum deposit: ${minAmt} ${currName}`, 'red'); return; }
-
-  const btn = document.getElementById('createDepBtn');
-  btn.textContent = 'Creating...';
-  btn.disabled = true;
-
-  const r = await apiFetch(`/api/wallet.php?action=create_deposit&currency=${curr}&amount=${amt}`);
-  btn.textContent = 'Create Deposit';
-  btn.disabled = false;
-
-  if (!r.success) { toast(r.error, 'red'); return; }
-
-  toast(`Deposit created! Send ${r.amount} ${currName} to the address.`, 'green', 6000);
-
-  if (r.payment_url) {
-    window.open(r.payment_url, '_blank');
-  }
-
-  await loadActiveDeposits();
-  await loadWalletData();
 }
 
 async function loadTxHistory() {
