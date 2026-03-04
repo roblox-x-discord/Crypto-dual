@@ -42,14 +42,16 @@ body{background:#0f172a;color:#e2e8f0;font-family:'Inter',sans-serif;overflow-x:
   .sidebar-panel{display:none}
   .chat-col{display:none}
   .main-col{margin:0}
-  .bottom-nav{display:flex !important}
+  .bottom-nav{display:none}
   .show-on-desktop{display:none !important}
+  .show-on-mobile{display:block !important}
 }
 @media(min-width:1024px){
   .bottom-nav{display:none !important}
   .show-on-mobile{display:none !important}
 }
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0f172a;border-top:1px solid #1e293b;z-index:50;padding:6px 0 max(6px,env(safe-area-inset-bottom));display:none}
+.show-on-mobile{display:none}
+.bottom-nav{display:none}
 
 /* ── Ticker ── */
 .ticker-wrap{overflow:hidden;white-space:nowrap}
@@ -66,8 +68,8 @@ body{background:#0f172a;color:#e2e8f0;font-family:'Inter',sans-serif;overflow-x:
 /* ── Modals ── */
 .overlay{position:fixed;inset:0;background:rgba(2,6,23,.9);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:16px}
 .overlay.open{display:flex}
-.modal-box{background:#0f172a;border:1px solid rgba(168,85,247,.3);border-radius:20px;width:100%;max-width:460px;overflow:hidden;animation:popIn .3s ease-out}
-@media(max-width:640px){.modal-box{max-width:100%;border-radius:20px 20px 0 0;position:fixed;bottom:0;left:0;right:0}}
+.modal-box{background:#0f172a;border:1px solid rgba(168,85,247,.3);border-radius:20px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;overflow-x:hidden;animation:popIn .3s ease-out}
+@media(max-width:640px){.modal-box{max-width:90%;border-radius:16px;max-height:85vh}}
 @keyframes popIn{0%{transform:scale(.94) translateY(12px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
 
 /* ── TTT Board ── */
@@ -116,9 +118,9 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
 
 /* ── Mobile centering ── */
 @media(max-width:1023px){
-  .main-col{margin:0;padding-bottom:80px}
+  .main-col{margin:0}
   .layout{flex-direction:column}
-  .toast-stack{top:auto;bottom:80px;right:8px;left:8px}
+  .toast-stack{top:auto;bottom:20px;right:8px;left:8px}
   .toast{max-width:calc(100% - 16px)}
   /* Center main content on tablet/mobile */
   main{max-width:640px;margin:0 auto;padding-left:16px;padding-right:16px}
@@ -126,11 +128,11 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
 @media(max-width:768px){
   .section{padding:12px 8px}
   .card{border-radius:12px}
-  /* Ensure modal is full screen on mobile with proper centering */
-  .modal-box{margin:0;max-width:100%;border-radius:20px 20px 0 0;position:fixed;bottom:0;left:0;right:0;height:auto;max-height:85vh}
+  /* Center modal on mobile */
+  .modal-box{margin:auto;max-width:90%;border-radius:16px}
   .modal-box .p-5 {padding:16px}
   /* Center content on mobile with tighter spacing */
-  main{padding:8px;max-width:100%}
+  main{padding:12px;max-width:100%}
   /* Smaller gaps on mobile */
   .grid{gap:8px !important}
   .grid.grid-cols-2{display:grid;grid-template-columns:repeat(2,1fr) !important;gap:8px}
@@ -407,7 +409,7 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
   </header>
 
   <!-- ── SECTIONS ── -->
-  <main class="flex-1 p-3 sm:p-4 lg:p-6 pb-24 lg:pb-6 max-w-5xl mx-auto w-full">
+  <main class="flex-1 p-3 sm:p-4 lg:p-6 max-w-5xl mx-auto w-full">
 
    <!-- LOBBY -->
    <div class="section active" id="section-lobby">
@@ -434,6 +436,28 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
      <div class="col-span-full flex flex-col items-center py-12 text-slate-500">
       <div class="w-10 h-10 border-2 border-purple-500/40 border-t-purple-500 rounded-full spin mb-3"></div>
       Loading games...
+     </div>
+    </div>
+    <!-- Mobile Navigation -->
+    <div class="show-on-mobile mt-6 pt-4 border-t border-slate-800">
+     <div class="grid grid-cols-3 gap-2">
+      <button onclick="nav('lobby')" class="flex flex-col items-center gap-1 py-3 bg-purple-500/20 border border-purple-500/40 rounded-xl text-purple-400">
+       <span class="text-lg">🏠</span><span class="text-xs font-semibold">Lobby</span>
+      </button>
+      <button onclick="nav('leaderboard')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">🏆</span><span class="text-xs font-semibold">Ranks</span>
+      </button>
+      <button onclick="nav('history')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">📋</span><span class="text-xs font-semibold">Games</span>
+      </button>
+     </div>
+     <div class="grid grid-cols-2 gap-2 mt-2">
+      <button onclick="requireAuth(()=>{loadWalletData();openModal('walletModal')})" class="flex items-center justify-center gap-2 py-2.5 bg-green-500/20 border border-green-500/40 rounded-xl text-green-400 font-semibold text-sm">
+       <span>💰</span> Wallet
+      </button>
+      <button onclick="openChatDrawer()" class="flex items-center justify-center gap-2 py-2.5 bg-cyan-500/20 border border-cyan-500/40 rounded-xl text-cyan-400 font-semibold text-sm">
+       <span>💬</span> Chat
+      </button>
      </div>
     </div>
    </div>
@@ -473,6 +497,28 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
       </table>
      </div>
     </div>
+    <!-- Mobile Navigation -->
+    <div class="show-on-mobile mt-6 pt-4 border-t border-slate-800">
+     <div class="grid grid-cols-3 gap-2">
+      <button onclick="nav('lobby')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">🏠</span><span class="text-xs font-semibold">Lobby</span>
+      </button>
+      <button onclick="nav('leaderboard')" class="flex flex-col items-center gap-1 py-3 bg-purple-500/20 border border-purple-500/40 rounded-xl text-purple-400">
+       <span class="text-lg">🏆</span><span class="text-xs font-semibold">Ranks</span>
+      </button>
+      <button onclick="nav('history')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">📋</span><span class="text-xs font-semibold">Games</span>
+      </button>
+     </div>
+     <div class="grid grid-cols-2 gap-2 mt-2">
+      <button onclick="requireAuth(()=>{loadWalletData();openModal('walletModal')})" class="flex items-center justify-center gap-2 py-2.5 bg-green-500/20 border border-green-500/40 rounded-xl text-green-400 font-semibold text-sm">
+       <span>💰</span> Wallet
+      </button>
+      <button onclick="openChatDrawer()" class="flex items-center justify-center gap-2 py-2.5 bg-cyan-500/20 border border-cyan-500/40 rounded-xl text-cyan-400 font-semibold text-sm">
+       <span>💬</span> Chat
+      </button>
+     </div>
+    </div>
    </div>
 
    <!-- MY GAMES HISTORY -->
@@ -491,6 +537,28 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
      <div class="text-center text-slate-500 py-8 text-sm">Loading your games...</div>
     </div>
     <?php endif; ?>
+    <!-- Mobile Navigation -->
+    <div class="show-on-mobile mt-6 pt-4 border-t border-slate-800">
+     <div class="grid grid-cols-3 gap-2">
+      <button onclick="nav('lobby')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">🏠</span><span class="text-xs font-semibold">Lobby</span>
+      </button>
+      <button onclick="nav('leaderboard')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">🏆</span><span class="text-xs font-semibold">Ranks</span>
+      </button>
+      <button onclick="nav('history')" class="flex flex-col items-center gap-1 py-3 bg-purple-500/20 border border-purple-500/40 rounded-xl text-purple-400">
+       <span class="text-lg">📋</span><span class="text-xs font-semibold">Games</span>
+      </button>
+     </div>
+     <div class="grid grid-cols-2 gap-2 mt-2">
+      <button onclick="requireAuth(()=>{loadWalletData();openModal('walletModal')})" class="flex items-center justify-center gap-2 py-2.5 bg-green-500/20 border border-green-500/40 rounded-xl text-green-400 font-semibold text-sm">
+       <span>💰</span> Wallet
+      </button>
+      <button onclick="openChatDrawer()" class="flex items-center justify-center gap-2 py-2.5 bg-cyan-500/20 border border-cyan-500/40 rounded-xl text-cyan-400 font-semibold text-sm">
+       <span>💬</span> Chat
+      </button>
+     </div>
+    </div>
    </div>
 
   </main>
@@ -621,28 +689,6 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
   </div>
  </div>
 </div>
-
-<!-- BOTTOM NAV (mobile/tablet) -->
-<nav class="bottom-nav">
- <div class="flex justify-around items-center px-2">
-  <?php foreach([
-   ['lobby',    '🏠', 'Lobby'],
-   ['leaderboard','🏆','Ranks'],
-   ['history',  '📋', 'Games'],
-  ] as [$s,$ic,$lb]): ?>
-  <button onclick="nav('<?= $s ?>')" data-bnav="<?= $s ?>" class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors text-slate-500 hover:text-purple-400">
-   <span class="text-xl"><?= $ic ?></span>
-   <span class="text-xs font-medium"><?= $lb ?></span>
-  </button>
-  <?php endforeach; ?>
-  <button onclick="requireAuth(()=>{loadWalletData();openModal('walletModal')})" class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors text-slate-500 hover:text-green-400">
-   <span class="text-xl">💰</span><span class="text-xs font-medium">Wallet</span>
-  </button>
-  <button onclick="openChatDrawer()" class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors text-slate-500 hover:text-cyan-400">
-   <span class="text-xl">💬</span><span class="text-xs font-medium">Chat</span>
-  </button>
- </div>
-</nav>
 
 <!-- ════════════════════════ JAVASCRIPT ════════════════════════ -->
 <script>

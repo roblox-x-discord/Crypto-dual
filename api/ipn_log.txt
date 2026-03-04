@@ -16,3 +16,75 @@ GET data: Array
 Signature verified
 Payment ID: 5755191123, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772627177
 Error: Transaction not found for payment_id: 5755191123
+2026-03-04 07:56:19 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628931","outcome_amount":99.4999854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"3LyEVqG7FWsnvSnfD7ME3KgDacx4jkZ4YY","pay_amount":100,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":6114249491,"payment_status":"waiting","price_amount":100,"price_currency":"btc","purchase_id":"5966289465","updated_at":1772628970378}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 6114249491, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628931
+Error: Transaction not found for payment_id: 6114249491
+2026-03-04 07:56:36 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628942","outcome_amount":99.4999854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"33nAYM31x2oZ2cWvSTCdi7FcYQgmsbkPBr","pay_amount":100,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":5879313467,"payment_status":"waiting","price_amount":100,"price_currency":"btc","purchase_id":"4504514638","updated_at":1772628995796}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 5879313467, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628942
+Error: Transaction not found for payment_id: 5879313467
+2026-03-04 07:56:36 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628961","outcome_amount":104.4749854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"3NmaokJz7Z63hRXFcfPRC9aaHkC3Swf1es","pay_amount":105,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":5488127872,"payment_status":"waiting","price_amount":105,"price_currency":"btc","purchase_id":"6424240352","updated_at":1772628995803}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 5488127872, Status: waiting, Currency: , Amount: 105, Order ID: 1_1772628961
+Error: Transaction not found for payment_id: 5488127872
+2026-03-04 07:56:37 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628954","outcome_amount":99.4999854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"3ATXA8xK32vpp4X1ATsEfcigohPYCLYmW8","pay_amount":100,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":5751980100,"payment_status":"waiting","price_amount":100,"price_currency":"btc","purchase_id":"4752804354","updated_at":1772628995816}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 5751980100, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628954
+Error: Transaction not found for payment_id: 5751980100
+2026-03-04 07:56:37 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628952","outcome_amount":99.4999854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"37sNQVTqJd6R1JnbdUSq56CS26UTcK8s8L","pay_amount":100,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":5362429665,"payment_status":"waiting","price_amount":100,"price_currency":"btc","purchase_id":"5690493748","updated_at":1772628995819}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 5362429665, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628952
+Error: Transaction not found for payment_id: 5362429665
+2026-03-04 07:56:37 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628951","outcome_amount":99.4999854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"32vo8zQAHRejeHLDmQppG2tkWVBPHnwEHs","pay_amount":100,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":6032858892,"payment_status":"waiting","price_amount":100,"price_currency":"btc","purchase_id":"5479222093","updated_at":1772628995818}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 6032858892, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628951
+Error: Transaction not found for payment_id: 6032858892
+2026-03-04 07:56:37 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628950","outcome_amount":99.4999854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"33KG4ceZqieJWkvUkpNRnkE8rfqHvUCquZ","pay_amount":100,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":6003063948,"payment_status":"waiting","price_amount":100,"price_currency":"btc","purchase_id":"5358583681","updated_at":1772628995829}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 6003063948, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628950
+Error: Transaction not found for payment_id: 6003063948
+2026-03-04 07:56:37 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"btc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772628949","outcome_amount":99.4999854,"outcome_currency":"btc","parent_payment_id":null,"pay_address":"3EzqYmk5j34xy5qfMuTzv3VFUCosMqrpQQ","pay_amount":100,"pay_currency":"btc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":6418280300,"payment_status":"waiting","price_amount":100,"price_currency":"btc","purchase_id":"5116538042","updated_at":1772628995828}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 6418280300, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628949
+Error: Transaction not found for payment_id: 6418280300
