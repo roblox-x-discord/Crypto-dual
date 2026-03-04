@@ -88,3 +88,12 @@ GET data: Array
 Signature verified
 Payment ID: 6418280300, Status: waiting, Currency: , Amount: 100, Order ID: 1_1772628949
 Error: Transaction not found for payment_id: 6418280300
+2026-03-04 08:30:15 - IPN received
+POST data: {"actually_paid":0,"actually_paid_at_fiat":0,"fee":{"currency":"ltc","depositFee":0,"serviceFee":0,"withdrawalFee":0},"invoice_id":null,"order_description":"CryptoDuel deposit for user Emmanuelken","order_id":"1_1772630981","outcome_amount":1.9897015,"outcome_currency":"ltc","parent_payment_id":null,"pay_address":"MDmDiu8H3GRiriqK9a4ypfbGaxxsqBd7DL","pay_amount":2,"pay_currency":"ltc","payin_extra_id":null,"payment_extra_ids":null,"payment_id":6063546932,"payment_status":"waiting","price_amount":2,"price_currency":"ltc","purchase_id":"5069372614","updated_at":1772631013406}
+GET data: Array
+(
+)
+
+Signature verified
+Payment ID: 6063546932, Status: waiting, Currency: , Amount: 2, Order ID: 1_1772630981
+Error: Transaction not found for payment_id: 6063546932

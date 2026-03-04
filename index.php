@@ -332,6 +332,10 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="shrink-0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     <span class="nav-lbl">Lobby</span>
    </a>
+   <a class="nav-item" data-nav="sports" onclick="nav('sports')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="shrink-0"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+    <span class="nav-lbl">Sports Betting</span>
+   </a>
    <a class="nav-item" data-nav="leaderboard" onclick="nav('leaderboard')">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="shrink-0"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
     <span class="nav-lbl">Leaderboard</span>
@@ -558,6 +562,52 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
        <span class="text-lg">🏆</span><span class="text-xs font-semibold">Ranks</span>
       </button>
       <button onclick="nav('history')" class="flex flex-col items-center gap-1 py-3 bg-purple-500/20 border border-purple-500/40 rounded-xl text-purple-400">
+       <span class="text-lg">📋</span><span class="text-xs font-semibold">Games</span>
+      </button>
+     </div>
+     <div class="grid grid-cols-2 gap-2 mt-2">
+      <button onclick="requireAuth(()=>{loadWalletData();openModal('walletModal')})" class="flex items-center justify-center gap-2 py-2.5 bg-green-500/20 border border-green-500/40 rounded-xl text-green-400 font-semibold text-sm">
+       <span>💰</span> Wallet
+      </button>
+      <button onclick="openChatDrawer()" class="flex items-center justify-center gap-2 py-2.5 bg-cyan-500/20 border border-cyan-500/40 rounded-xl text-cyan-400 font-semibold text-sm">
+       <span>💬</span> Chat
+      </button>
+     </div>
+    </div>
+   </div>
+
+   <!-- SPORTS BETTING -->
+   <div class="section" id="section-sports">
+    <div class="mb-5">
+     <h1 class="text-xl sm:text-2xl font-black text-white">⚽ Sports Betting</h1>
+     <p class="text-slate-400 text-sm">Bet on Football & Basketball matches — P2P or vs House!</p>
+    </div>
+
+    <!-- Sport Filter -->
+    <div class="flex gap-2 mb-4">
+     <button onclick="filterSports('all')" class="sport-filter-btn active px-4 py-2 bg-purple-500/20 border border-purple-500/40 rounded-xl text-purple-400 text-sm font-semibold" data-sport="all">All</button>
+     <button onclick="filterSports('FOOTBALL')" class="sport-filter-btn px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-slate-400 text-sm font-semibold" data-sport="FOOTBALL">⚽ Football</button>
+     <button onclick="filterSports('BASKETBALL')" class="sport-filter-btn px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-slate-400 text-sm font-semibold" data-sport="BASKETBALL">🏀 Basketball</button>
+    </div>
+
+    <!-- Matches Grid -->
+    <div id="matchesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+     <div class="col-span-full flex flex-col items-center py-12 text-slate-500">
+      <div class="w-10 h-10 border-2 border-purple-500/40 border-t-purple-500 rounded-full spin mb-3"></div>
+      Loading matches...
+     </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="show-on-mobile mt-6 pt-4 border-t border-slate-800">
+     <div class="grid grid-cols-3 gap-2">
+      <button onclick="nav('lobby')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">🏠</span><span class="text-xs font-semibold">Lobby</span>
+      </button>
+      <button onclick="nav('sports')" class="flex flex-col items-center gap-1 py-3 bg-purple-500/20 border border-purple-500/40 rounded-xl text-purple-400">
+       <span class="text-lg">⚽</span><span class="text-xs font-semibold">Sports</span>
+      </button>
+      <button onclick="nav('history')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
        <span class="text-lg">📋</span><span class="text-xs font-semibold">Games</span>
       </button>
      </div>
@@ -821,6 +871,7 @@ function nav(name) {
 
   clearInterval(APP.gameInterval);
   if (name === 'lobby')       { loadLobby(); startLobbyPoll(); }
+  if (name === 'sports')      { loadSportsMatches(); }
   if (name === 'leaderboard') { loadLeaderboard(); }
   if (name === 'history')     { loadMyGames(); }
   if (name === 'game' && APP.activeGameId) { pollGame(); startGamePoll(); }
@@ -1185,6 +1236,211 @@ async function loadLeaderboard() {
       <td class="px-4 py-3 text-right"><span class="text-red-400 text-sm">${p.losses}</span></td>
       <td class="px-4 py-3 text-right"><span class="text-yellow-400 font-bold text-sm">+${p.profit.toFixed(4)}</span></td>
     </tr>`).join('');
+}
+
+// ── Sports Betting ─────────────────────────────────────────────────────────────
+let currentSportFilter = 'all';
+
+function filterSports(sport) {
+  currentSportFilter = sport;
+  document.querySelectorAll('.sport-filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.sport === sport);
+    btn.classList.toggle('bg-purple-500/20', btn.dataset.sport === sport);
+    btn.classList.toggle('border-purple-500/40', btn.dataset.sport === sport);
+    btn.classList.toggle('text-purple-400', btn.dataset.sport === sport);
+    btn.classList.toggle('bg-slate-800', btn.dataset.sport !== sport);
+    btn.classList.toggle('border-slate-700', btn.dataset.sport !== sport);
+    btn.classList.toggle('text-slate-400', btn.dataset.sport !== sport);
+  });
+  loadSportsMatches();
+}
+
+async function loadSportsMatches() {
+  const url = currentSportFilter === 'all'
+    ? '/api/sports.php?action=matches'
+    : `/api/sports.php?action=matches&sport=${currentSportFilter}`;
+
+  const r = await apiFetch(url);
+  const grid = document.getElementById('matchesGrid');
+
+  if (!r.success || !r.matches.length) {
+    grid.innerHTML = `
+      <div class="col-span-full flex flex-col items-center py-14 text-slate-500">
+        <div style="font-size:3rem" class="mb-3">⚽</div>
+        <p class="font-semibold text-base mb-1">No matches available</p>
+        <p class="text-sm">Matches will appear here when scheduled</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = r.matches.map(m => {
+    const isUpcoming = m.status === 'upcoming';
+    const isLive = m.status === 'live';
+    const isFinished = m.status === 'finished';
+    const sportIcon = m.sport_type === 'FOOTBALL' ? '⚽' : '🏀';
+    const matchTime = new Date(m.match_time * 1000);
+    const timeStr = matchTime.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    return `<div class="card p-4 fade-in">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">${sportIcon}</span>
+          <span class="text-xs font-semibold ${m.sport_type === 'FOOTBALL' ? 'text-green-400' : 'text-orange-400'}">${m.sport_type}</span>
+          ${m.league_name ? `<span class="text-slate-500 text-xs">• ${m.league_name}</span>` : ''}
+        </div>
+        <span class="text-xs font-semibold ${isUpcoming ? 'text-yellow-400' : isLive ? 'text-green-400' : 'text-slate-400'}">${isUpcoming ? 'UPCOMING' : isLive ? '🔴 LIVE' : 'FINISHED'}</span>
+      </div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="text-center flex-1">
+          <p class="text-white font-bold text-sm">${m.home_team}</p>
+          ${isFinished || isLive ? `<p class="text-2xl font-black text-white mt-1">${m.home_score}</p>` : ''}
+        </div>
+        <div class="text-center px-3">
+          <p class="text-slate-500 text-xs font-bold">VS</p>
+        </div>
+        <div class="text-center flex-1">
+          <p class="text-white font-bold text-sm">${m.away_team}</p>
+          ${isFinished || isLive ? `<p class="text-2xl font-black text-white mt-1">${m.away_score}</p>` : ''}
+        </div>
+      </div>
+      ${isUpcoming ? `
+        <div class="text-center text-xs text-slate-400 mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline mr-1"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${timeStr}
+        </div>
+        <button onclick="openBetModal(${m.id}, '${m.home_team}', '${m.away_team}')" class="w-full py-2.5 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">
+          Place Bet
+        </button>
+      ` : isFinished ? `
+        <div class="text-center text-sm font-semibold ${m.winner === 'draw' ? 'text-blue-400' : 'text-green-400'}">
+          ${m.winner === 'draw' ? '🤝 It\'s a Draw!' : `🏆 ${m.winner === 'home' ? m.home_team : m.away_team} Wins!`}
+        </div>
+      ` : `
+        <div class="text-center text-xs text-red-400 font-semibold">🔴 In Progress</div>
+      `}
+    </div>`;
+  }).join('');
+}
+
+function openBetModal(matchId, homeTeam, awayTeam) {
+  if (!APP.loggedIn) { openModal('authModal'); return; }
+
+  const modal = document.createElement('div');
+  modal.className = 'overlay open';
+  modal.id = 'betModal';
+  modal.innerHTML = `
+    <div class="modal-box" style="max-width:400px">
+      <div class="flex items-center justify-between p-4 border-b border-slate-800">
+        <div><p class="text-white font-bold">Place Your Bet</p><p class="text-slate-400 text-xs">${homeTeam} vs ${awayTeam}</p></div>
+        <button onclick="closeBetModal()" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="p-4 space-y-3">
+        <div id="betError" class="hidden p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm"></div>
+        <div>
+          <label class="text-slate-400 text-xs font-medium mb-2 block">Bet Type</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="selectBetType('p2p')" id="betTypeP2P" class="bet-type-btn py-2 bg-purple-500/20 border-2 border-purple-500 rounded-xl text-purple-400 text-xs font-semibold">vs Player (P2P)</button>
+            <button onclick="selectBetType('house')" id="betTypeHouse" class="bet-type-btn py-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-slate-400 text-xs font-semibold">vs House</button>
+          </div>
+        </div>
+        <div>
+          <label class="text-slate-400 text-xs font-medium mb-2 block">Who Will Win?</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="selectTeam('home')" id="teamHome" class="team-btn py-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-slate-400 text-xs font-semibold">${homeTeam}</button>
+            <button onclick="selectTeam('draw')" id="teamDraw" class="team-btn py-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-slate-400 text-xs font-semibold">Draw</button>
+            <button onclick="selectTeam('away')" id="teamAway" class="team-btn py-2 bg-slate-800 border-2 border-slate-700 rounded-xl text-slate-400 text-xs font-semibold">${awayTeam}</button>
+          </div>
+        </div>
+        <div>
+          <label class="text-slate-400 text-xs font-medium mb-2 block">Amount (BTC)</label>
+          <input id="betAmount" type="number" step="0.00001" min="0.00001" placeholder="0.00000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500" oninput="updateBetPreview()"/>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-3 text-xs space-y-2">
+          <div class="flex justify-between"><span class="text-slate-400">You bet</span><span class="text-white font-bold" id="betYouBet">— BTC</span></div>
+          <div class="flex justify-between"><span class="text-green-400">Potential win</span><span class="text-green-400 font-bold" id="betPotentialWin">— BTC</span></div>
+          <p class="text-slate-500 text-xs mt-2 text-center">If you win, you get 1.5x your bet!</p>
+        </div>
+        <button onclick="placeBet(${matchId})" id="placeBetBtn" class="w-full py-3 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">Place Bet</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBetModal() {
+  const modal = document.getElementById('betModal');
+  if (modal) { modal.remove(); }
+  document.body.style.overflow = '';
+}
+
+let selectedBetType = 'p2p';
+let selectedTeam = '';
+
+function selectBetType(type) {
+  selectedBetType = type;
+  document.querySelectorAll('.bet-type-btn').forEach(btn => {
+    btn.classList.remove('bg-purple-500/20', 'border-purple-500', 'text-purple-400');
+    btn.classList.add('bg-slate-800', 'border-slate-700', 'text-slate-400');
+  });
+  const activeBtn = document.getElementById(type === 'p2p' ? 'betTypeP2P' : 'betTypeHouse');
+  activeBtn.classList.remove('bg-slate-800', 'border-slate-700', 'text-slate-400');
+  activeBtn.classList.add('bg-purple-500/20', 'border-purple-500', 'text-purple-400');
+  updateBetPreview();
+}
+
+function selectTeam(team) {
+  selectedTeam = team;
+  document.querySelectorAll('.team-btn').forEach(btn => {
+    btn.classList.remove('bg-purple-500/20', 'border-purple-500', 'text-purple-400');
+    btn.classList.add('bg-slate-800', 'border-slate-700', 'text-slate-400');
+  });
+  const activeBtn = document.getElementById(team === 'home' ? 'teamHome' : team === 'away' ? 'teamAway' : 'teamDraw');
+  activeBtn.classList.remove('bg-slate-800', 'border-slate-700', 'text-slate-400');
+  activeBtn.classList.add('bg-purple-500/20', 'border-purple-500', 'text-purple-400');
+}
+
+function updateBetPreview() {
+  const amt = parseFloat(document.getElementById('betAmount')?.value || 0);
+  const youBet = document.getElementById('betYouBet');
+  const potentialWin = document.getElementById('betPotentialWin');
+  if (youBet) youBet.textContent = amt.toFixed(8) + ' BTC';
+  if (potentialWin) potentialWin.textContent = (amt * 1.5).toFixed(8) + ' BTC';
+}
+
+async function placeBet(matchId) {
+  const amt = parseFloat(document.getElementById('betAmount').value || 0);
+  const err = document.getElementById('betError');
+
+  if (!selectedTeam) { err.textContent = 'Please select a team'; err.classList.remove('hidden'); return; }
+  if (amt < 0.00001) { err.textContent = 'Minimum bet: 0.00001 BTC'; err.classList.remove('hidden'); return; }
+
+  const btn = document.getElementById('placeBetBtn');
+  btn.textContent = 'Placing...';
+  btn.disabled = true;
+  err.classList.add('hidden');
+
+  const r = await apiFetch('/api/sports.php?action=place_bet', {
+    method: 'POST',
+    body: JSON.stringify({
+      match_id: matchId,
+      bet_type: selectedBetType,
+      team_selection: selectedTeam,
+      amount_btc: amt,
+    }),
+  });
+
+  btn.textContent = 'Place Bet';
+  btn.disabled = false;
+
+  if (!r.success) { err.textContent = r.error; err.classList.remove('hidden'); return; }
+
+  updateAllBalances(r.balance_btc);
+  closeBetModal();
+  toast('Bet placed successfully! Good luck! 🍀', 'green', 4000);
+  loadSportsMatches();
 }
 
 // ── My Games History ──────────────────────────────────────────────────────────

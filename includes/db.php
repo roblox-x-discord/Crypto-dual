@@ -123,6 +123,39 @@ function initTables(SQLite3 $db): void {
     CREATE INDEX IF NOT EXISTS idx_np_user      ON nowpayments_transactions(user_id);
     CREATE INDEX IF NOT EXISTS idx_np_status    ON nowpayments_transactions(status);
     CREATE INDEX IF NOT EXISTS idx_np_payment   ON nowpayments_transactions(payment_id);
+
+    // Sports Betting Tables
+    CREATE TABLE IF NOT EXISTS sports_matches (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        sport_type      TEXT    NOT NULL,
+        home_team       TEXT    NOT NULL,
+        away_team       TEXT    NOT NULL,
+        league_name     TEXT,
+        match_time      INTEGER NOT NULL,
+        status          TEXT    DEFAULT 'upcoming',
+        home_score      INTEGER DEFAULT 0,
+        away_score      INTEGER DEFAULT 0,
+        winner          TEXT,
+        created_at      INTEGER DEFAULT (strftime('%s','now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS sports_bets (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id         INTEGER NOT NULL REFERENCES users(id),
+        match_id        INTEGER NOT NULL REFERENCES sports_matches(id),
+        bet_type        TEXT    NOT NULL,
+        team_selection  TEXT    NOT NULL,
+        amount_btc      REAL    NOT NULL,
+        potential_win   REAL    NOT NULL,
+        status          TEXT    DEFAULT 'pending',
+        win_amount      REAL    DEFAULT 0,
+        created_at      INTEGER DEFAULT (strftime('%s','now')),
+        settled_at      INTEGER
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_sports_status   ON sports_matches(status);
+    CREATE INDEX IF NOT EXISTS idx_sports_bets_user ON sports_bets(user_id);
+    CREATE INDEX IF NOT EXISTS idx_sports_bets_match ON sports_bets(match_id);
     ");
 }
 
