@@ -220,19 +220,30 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
   </div>
   <!-- Deposit -->
   <div id="wpanel-deposit" class="p-5">
-   <p class="text-slate-400 text-sm text-center mb-4">Deposit Bitcoin — receive 80% after 20% platform fee</p>
+   <p class="text-slate-400 text-sm text-center mb-4">Deposit Crypto — receive 80% after 20% platform fee</p>
+
+   <!-- Currency Selector -->
+   <div class="grid grid-cols-2 gap-2 mb-4">
+    <button onclick="selectDepositCurrency('BTC')" id="currBtnBTC" class="flex items-center justify-center gap-2 p-3 bg-purple-500/20 border-2 border-purple-500 rounded-xl transition-all">
+     <span class="text-orange-400 font-bold text-xl">₿</span>
+     <div class="text-left">
+      <p class="text-white font-bold text-sm">Bitcoin</p>
+      <p class="text-slate-400 text-xs">BTC</p>
+     </div>
+    </button>
+    <button onclick="selectDepositCurrency('LTC')" id="currBtnLTC" class="flex items-center justify-center gap-2 p-3 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all hover:border-slate-600">
+     <span class="text-slate-300 font-bold text-xl">Ł</span>
+     <div class="text-left">
+      <p class="text-white font-bold text-sm">Litecoin</p>
+      <p class="text-slate-400 text-xs">LTC</p>
+     </div>
+    </button>
+   </div>
 
    <!-- Deposit options -->
    <div class="space-y-3 mb-5">
-    <div class="bg-slate-800 rounded-xl p-4 flex items-center justify-center gap-3 mb-4">
-     <span class="text-orange-400 font-black text-2xl">₿</span>
-     <div>
-      <p class="text-white font-bold">Bitcoin (BTC)</p>
-      <p class="text-slate-400 text-xs">Fast & secure deposits</p>
-     </div>
-    </div>
     <div>
-     <label class="text-slate-400 text-xs font-medium mb-2 block">Amount (BTC)</label>
+     <label class="text-slate-400 text-xs font-medium mb-2 block">Amount (<span id="depositCurrencyLabel">BTC</span>)</label>
      <input id="depositAmount" type="number" step="0.00001" min="0.0001" placeholder="0.00000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-purple-500" oninput="updateDepositPreview()"/>
     </div>
     <div class="bg-slate-800 rounded-xl p-4 text-xs space-y-2">
@@ -250,7 +261,7 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
    </div>
 
    <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 text-xs text-blue-300 leading-relaxed mt-4">
-    <strong>Deposits via NOWPayments:</strong> Send Bitcoin to the generated address. You'll receive 80% after confirmation. Minimum: 0.0001 BTC.
+    <strong>Deposits via NOWPayments:</strong> Send crypto to the generated address. You'll receive 80% after confirmation. Minimum: 0.0001 BTC / 0.001 LTC.
    </div>
   </div>
   <!-- Withdraw -->
@@ -708,6 +719,7 @@ const APP = {
   gameInterval: null,
   lobbyInterval: null,
   section: 'lobby',
+  depositCurrency: 'BTC',
 };
 
 // Win lines
@@ -1272,6 +1284,29 @@ function openChatDrawer()  { document.getElementById('chatDrawer').classList.add
 function closeChatDrawer() { document.getElementById('chatDrawer').classList.remove('open'); document.body.style.overflow = ''; }
 
 // ── Wallet ───────────────────────────────────────────────────────────────────
+function selectDepositCurrency(currency) {
+  APP.depositCurrency = currency;
+
+  // Update button styles
+  const btcBtn = document.getElementById('currBtnBTC');
+  const ltcBtn = document.getElementById('currBtnLTC');
+
+  if (currency === 'BTC') {
+    btcBtn.className = 'flex items-center justify-center gap-2 p-3 bg-purple-500/20 border-2 border-purple-500 rounded-xl transition-all';
+    ltcBtn.className = 'flex items-center justify-center gap-2 p-3 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all hover:border-slate-600';
+  } else {
+    ltcBtn.className = 'flex items-center justify-center gap-2 p-3 bg-purple-500/20 border-2 border-purple-500 rounded-xl transition-all';
+    btcBtn.className = 'flex items-center justify-center gap-2 p-3 bg-slate-800 border-2 border-slate-700 rounded-xl transition-all hover:border-slate-600';
+  }
+
+  // Update label
+  const label = document.getElementById('depositCurrencyLabel');
+  if (label) label.textContent = currency;
+
+  // Update preview
+  updateDepositPreview();
+}
+
 function wTab(tab) {
   ['deposit','withdraw','history'].forEach(t => {
     document.getElementById('wpanel-' + t).classList.toggle('hidden', t !== tab);
@@ -1328,30 +1363,35 @@ async function loadActiveDeposits() {
 
 function updateDepositPreview() {
   const amt = parseFloat(document.getElementById('depositAmount').value) || 0;
-  const curr = 'BTC';
+  const curr = APP.depositCurrency || 'BTC';
   const depEl = document.getElementById('depDeposit');
   const feeEl = document.getElementById('depFee');
   const recEl = document.getElementById('depReceive');
-  if (depEl) depEl.textContent = amt.toFixed(8) + ' ' + curr;
-  if (feeEl) feeEl.textContent = (amt * 0.20).toFixed(8) + ' ' + curr;
-  if (recEl) recEl.textContent = (amt * 0.80).toFixed(8) + ' ' + curr;
+  const decimals = curr === 'LTC' ? 6 : 8;
+  if (depEl) depEl.textContent = amt.toFixed(decimals) + ' ' + curr;
+  if (feeEl) feeEl.textContent = (amt * 0.20).toFixed(decimals) + ' ' + curr;
+  if (recEl) recEl.textContent = (amt * 0.80).toFixed(decimals) + ' ' + curr;
 }
 
 async function createDeposit() {
+  const curr = APP.depositCurrency || 'BTC';
   const amt = parseFloat(document.getElementById('depositAmount').value);
-  if (!amt || amt <= 0.00001) { toast('Minimum deposit: 0.00001 BTC', 'red'); return; }
+  const minAmt = curr === 'BTC' ? 0.00001 : 0.001;
+  const currName = curr === 'BTC' ? 'BTC' : 'LTC';
+
+  if (!amt || amt < minAmt) { toast(`Minimum deposit: ${minAmt} ${currName}`, 'red'); return; }
 
   const btn = document.getElementById('createDepBtn');
   btn.textContent = 'Creating...';
   btn.disabled = true;
 
-  const r = await apiFetch(`/api/wallet.php?action=create_deposit&currency=BTC&amount=${amt}`);
+  const r = await apiFetch(`/api/wallet.php?action=create_deposit&currency=${curr}&amount=${amt}`);
   btn.textContent = 'Create Deposit';
   btn.disabled = false;
 
   if (!r.success) { toast(r.error, 'red'); return; }
 
-  toast(`Deposit created! Send ${r.amount} BTC to the address.`, 'green', 6000);
+  toast(`Deposit created! Send ${r.amount} ${currName} to the address.`, 'green', 6000);
 
   if (r.payment_url) {
     window.open(r.payment_url, '_blank');

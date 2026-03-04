@@ -40,6 +40,6 @@ define('NOWPAYMENTS_IPN_SECRET',   'xqNmCMqPBVuhGnW4v9lpNAxpAoakXbml');
 define('NOWPAYMENTS_API_URL',     'https://api.nowpayments.io/v1');
 define('NOWPAYMENTS_IPN_URL',     'https://' . ($_SERVER['HTTP_HOST'] ?? 'crypto-dashboard-ui-73d56b9a-3480.omnicoder.app') . '/api/ipn.php');
 
-// Supported currencies for deposits (BTC only for now)
-define('DEPOSIT_CURRENCIES', ['BTC']);
+// Supported currencies for deposits (BTC and LTC via NOWPayments)
+define('DEPOSIT_CURRENCIES', ['BTC', 'LTC']);
 define('DEFAULT_DEPOSIT_CURRENCY', 'BTC');
