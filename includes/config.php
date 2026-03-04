@@ -34,12 +34,15 @@ define('COIN_MAP', json_encode([
     'chainlink'   => ['sym'=>'LINK','name'=>'Chainlink','color'=>'blue'],
 ]));
 
-// ── NOWPayments Configuration ──────────────────────────────────────────────────
-define('NOWPAYMENTS_API_KEY',     'MFRRCC0-HXE4KRG-M41DA76-WZN8A71');
-define('NOWPAYMENTS_IPN_SECRET',   'xqNmCMqPBVuhGnW4v9lpNAxpAoakXbml');
-define('NOWPAYMENTS_API_URL',     'https://api.nowpayments.io/v1');
-define('NOWPAYMENTS_IPN_URL',     'https://' . ($_SERVER['HTTP_HOST'] ?? 'crypto-dashboard-ui-73d56b9a-3480.omnicoder.app') . '/api/ipn.php');
+// ── CoinRemitter Configuration ───────────────────────────────────────────────────
+define('COINREMITTER_API_KEYS', [
+    'BTC' => 'wkey_xMXG8DgmDHqUwpG',
+    'LTC' => 'wkey_2tPG22EhK6EUpHM',
+]);
+define('COINREMITTER_API_URL', 'https://coinremitter.com/api');
+define('COINREMITTER_IPN_SECRET', 'xqNmCMqPBVuhGnW4v9lpNAxpAoakXbml');
+define('COINREMITTER_IPN_URL', 'https://' . ($_SERVER['HTTP_HOST'] ?? 'crypto-dashboard-ui-73d56b9a-3480.omnicoder.app') . '/api/ipn.php');
 
-// Supported currencies for deposits (BTC and LTC via NOWPayments)
+// Supported currencies for deposits (BTC and LTC via CoinRemitter)
 define('DEPOSIT_CURRENCIES', ['BTC', 'LTC']);
 define('DEFAULT_DEPOSIT_CURRENCY', 'BTC');

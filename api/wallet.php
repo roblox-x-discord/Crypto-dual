@@ -14,8 +14,8 @@ if ($method === 'GET' && $action === 'currencies') {
     foreach (DEPOSIT_CURRENCIES as $curr) {
         $currencies[] = [
             'code' => $curr,
-            'name' => $curr === 'BTC' ? 'Bitcoin' : ($curr === 'LTC' ? 'Litecoin' : ($curr === 'ETH' ? 'Ethereum' : ($curr === 'USDT' ? 'Tether' : ($curr === 'USDC' ? 'USD Coin' : 'Dogecoin')))),
-            'icon' => $curr === 'BTC' ? '₿' : ($curr === 'LTC' ? 'Ł' : ($curr === 'ETH' ? 'Ξ' : ($curr === 'USDT' || $curr === 'USDC' ? '$' : 'Ð'))),
+            'name' => $curr === 'BTC' ? 'Bitcoin' : ($curr === 'LTC' ? 'Litecoin' : 'Ethereum'),
+            'icon' => $curr === 'BTC' ? '₿' : ($curr === 'LTC' ? 'Ł' : 'Ξ'),
         ];
     }
     jsonOk(['currencies' => $currencies, 'fee_percent' => DEPOSIT_FEE * 100]);
@@ -57,7 +57,7 @@ if ($method === 'GET' && $action === 'address') {
     jsonOk(['address' => $addr]);
 }
 
-// ── GET: NOWPayments deposit URL ─────────────────────────────────────────────────────
+// ── GET: CoinRemitter deposit URL ───────────────────────────────────────────────────
 if ($method === 'GET' && $action === 'create_deposit') {
     $currency = strtoupper($_GET['currency'] ?? 'BTC');
     $amount   = floatval($_GET['amount'] ?? 0);
@@ -70,30 +70,24 @@ if ($method === 'GET' && $action === 'create_deposit') {
         jsonError("Amount must be greater than 0");
     }
 
-    // Generate unique payment ID
-    $paymentId = 'CD_' . $u['id'] . '_' . time() . '_' . bin2hex(random_bytes(4));
-    $orderId   = $u['id'] . '_' . time();
+    $apiKey = COINREMITTER_API_KEY[$currency] ?? null;
+    if (!$apiKey) {
+        jsonError("API key not configured for $currency");
+    }
 
-    // Call NOWPayments API to create payment
-    $apiUrl = NOWPAYMENTS_API_URL . '/payment';
-    $postData = [
-        'price_amount'     => $amount,
-        'price_currency'   => $currency,
-        'pay_currency'     => $currency,
-        'ipn_callback_url' => NOWPAYMENTS_IPN_URL,
-        'order_id'         => $orderId,
-        'order_description'=> 'CryptoDuel deposit for user ' . $u['username'],
-    ];
+    // Get wallet address from CoinRemitter
+    $walletUrl = COINREMITTER_API_URL . '/' . strtolower($currency) . '/get_wallet_address';
 
-    $ch = curl_init($apiUrl);
+    $ch = curl_init($walletUrl);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
         CURLOPT_HTTPHEADER => [
             'Content-Type: application/json',
-            'X-API-Key: ' . NOWPAYMENTS_API_KEY,
         ],
-        CURLOPT_POSTFIELDS => json_encode($postData),
+        CURLOPT_POSTFIELDS => json_encode([
+            'api_key' => $apiKey,
+        ]),
         CURLOPT_TIMEOUT => 30,
         CURLOPT_SSL_VERIFYPEER => true,
     ]);
@@ -103,14 +97,20 @@ if ($method === 'GET' && $action === 'create_deposit') {
     curl_close($ch);
 
     if ($httpCode !== 200 || !$response) {
-        jsonError("Failed to create payment. Please try again.");
+        jsonError("Failed to get wallet address. Please try again.");
     }
 
-    $npResponse = json_decode($response, true);
+    $crResponse = json_decode($response, true);
 
-    if (!isset($npResponse['id'])) {
+    if (!isset($crResponse['data']['address'])) {
         jsonError("Invalid response from payment provider");
     }
+
+    $walletAddress = $crResponse['data']['address'];
+
+    // Generate unique payment ID
+    $paymentId = 'CD_' . $u['id'] . '_' . time() . '_' . bin2hex(random_bytes(4));
+    $orderId   = $u['id'] . '_' . time();
 
     // Calculate amounts (20% fee)
     $feeAmount = $amount * DEPOSIT_FEE;
@@ -123,25 +123,24 @@ if ($method === 'GET' && $action === 'create_deposit') {
     );
     $stmt->bindValue(1, (int)$u['id'], SQLITE3_INTEGER);
     $stmt->bindValue(2, $paymentId, SQLITE3_TEXT);
-    $stmt->bindValue(3, $npResponse['id'] ?? '', SQLITE3_TEXT);
+    $stmt->bindValue(3, $orderId, SQLITE3_TEXT);
     $stmt->bindValue(4, $currency, SQLITE3_TEXT);
     $stmt->bindValue(5, $amount, SQLITE3_FLOAT);
     $stmt->bindValue(6, $amount, SQLITE3_FLOAT); // For crypto, USD value is approx same
     $stmt->bindValue(7, $feeAmount, SQLITE3_FLOAT);
     $stmt->bindValue(8, $creditedAmount, SQLITE3_FLOAT);
-    $stmt->bindValue(9, $npResponse['pay_address'] ?? '', SQLITE3_TEXT);
+    $stmt->bindValue(9, $walletAddress, SQLITE3_TEXT);
     $stmt->bindValue(10, 'pending', SQLITE3_TEXT);
     $stmt->execute();
 
     jsonOk([
         'payment_id'    => $paymentId,
-        'np_payment_id' => $npResponse['id'] ?? null,
-        'pay_address'   => $npResponse['pay_address'] ?? '',
+        'np_payment_id' => $orderId,
+        'pay_address'   => $walletAddress,
         'amount'        => $amount,
         'currency'      => $currency,
         'fee_percent'   => DEPOSIT_FEE * 100,
         'you_receive'   => round($creditedAmount, 8),
-        'payment_url'   => $npResponse['payment_url'] ?? null,
     ]);
 }
 
