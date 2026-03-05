@@ -302,6 +302,98 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
  </div>
 </div>
 
+<!-- FOOTBALL BETTING MODAL -->
+<div class="overlay" id="footballBettingModal">
+ <div class="modal-box">
+  <div class="flex items-center justify-between p-5 border-b border-slate-800 sticky top-0 bg-slate-950 z-10">
+   <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-lg">⚽</div>
+    <div>
+     <p class="text-white font-bold text-base">Football Betting</p>
+     <p class="text-slate-400 text-xs" id="fbMatchInfo">Select a match</p>
+    </div>
+   </div>
+   <button onclick="closeModal('footballBettingModal')" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+   </button>
+  </div>
+
+  <div class="p-5">
+   <div id="fbErr" class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm"></div>
+
+   <!-- Match Teams Display -->
+   <div class="card p-4 mb-4 bg-slate-800/50">
+    <div class="flex items-center justify-between text-center">
+     <div class="flex-1">
+      <p class="text-white font-bold text-lg" id="fbTeam1">—</p>
+      <p class="text-slate-400 text-xs mt-1">Home</p>
+     </div>
+     <div class="text-slate-500 font-bold text-sm mx-3">vs</div>
+     <div class="flex-1">
+      <p class="text-white font-bold text-lg" id="fbTeam2">—</p>
+      <p class="text-slate-400 text-xs mt-1">Away</p>
+     </div>
+    </div>
+   </div>
+
+   <!-- Bet Type Selector -->
+   <div class="mb-4">
+    <label class="text-slate-400 text-xs font-semibold mb-2 block">Betting Type</label>
+    <div class="grid grid-cols-3 gap-2">
+     <button onclick="selectBetType('1v1')" id="btn-bet-1v1" class="py-2.5 px-3 bg-purple-500/20 border-2 border-purple-500 rounded-xl text-purple-400 text-xs font-bold transition-all">
+      1v1
+      <div class="text-[10px] text-purple-300 mt-0.5">Head to Head</div>
+     </button>
+     <button onclick="selectBetType('2v2')" id="btn-bet-2v2" class="py-2.5 px-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-slate-400 text-xs font-bold hover:border-slate-600 transition-all">
+      2v2
+      <div class="text-[10px] text-slate-400 mt-0.5">Team Play</div>
+     </button>
+     <button onclick="selectBetType('global')" id="btn-bet-global" class="py-2.5 px-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-slate-400 text-xs font-bold hover:border-slate-600 transition-all">
+      Global
+      <div class="text-[10px] text-slate-400 mt-0.5">Pool Bet</div>
+     </button>
+    </div>
+   </div>
+
+   <!-- Team Selection -->
+   <div class="mb-4">
+    <label class="text-slate-400 text-xs font-semibold mb-2 block">Pick Your Team</label>
+    <div class="grid grid-cols-3 gap-2">
+     <button onclick="selectTeam('home')" id="btn-team-home" class="py-3 px-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm font-bold hover:border-slate-600 transition-all">
+      <span class="text-white" id="fbTeam1Short">—</span>
+     </button>
+     <button onclick="selectTeam('draw')" id="btn-team-draw" class="py-3 px-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm font-bold hover:border-slate-600 transition-all">
+      Draw
+     </button>
+     <button onclick="selectTeam('away')" id="btn-team-away" class="py-3 px-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm font-bold hover:border-slate-600 transition-all">
+      <span class="text-white" id="fbTeam2Short">—</span>
+     </button>
+    </div>
+   </div>
+
+   <!-- Amount Input -->
+   <div class="mb-4">
+    <label class="text-slate-400 text-xs font-semibold mb-2 block">Bet Amount (BTC)</label>
+    <div class="relative">
+     <input id="fbAmount" type="number" step="0.00001" min="0.0001" placeholder="0.0001" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500"/>
+     <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">BTC</div>
+    </div>
+    <p class="text-slate-500 text-xs mt-2">Balance: <span class="text-purple-300 font-bold" id="fbBalance">—</span> BTC</p>
+   </div>
+
+   <!-- Info Box -->
+   <div id="fbInfoBox" class="bg-slate-800/50 rounded-xl p-3 mb-4 text-xs text-slate-400">
+    <p id="fbInfo">Select bet type and team to see details</p>
+   </div>
+
+   <!-- Place Bet Button -->
+   <button onclick="placeFBet()" id="fbPlaceBtn" class="w-full py-3 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">
+    Place Bet
+   </button>
+  </div>
+ </div>
+</div>
+
 <!-- MOBILE CHAT DRAWER -->
 <div class="chat-drawer" id="chatDrawer">
  <div class="chat-drawer-bg" onclick="closeChatDrawer()"></div>
@@ -470,6 +562,16 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
      <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Total Games</p><p class="text-purple-400 font-black text-2xl" id="sTotal">—</p></div>
      <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Your Balance</p><p class="text-cyan-400 font-black text-xl truncate" id="sBal"><?= $isLoggedIn ? number_format((float)$user['balance_btc'],4) : '—' ?></p></div>
     </div>
+    
+    <!-- Featured Football Matches -->
+    <h2 class="text-base font-bold text-white mb-3">⚽ Featured Football Matches</h2>
+    <div id="featuredMatchesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+     <div class="col-span-full flex flex-col items-center py-12 text-slate-500">
+      <div class="w-10 h-10 border-2 border-green-500/40 border-t-green-500 rounded-full spin mb-3"></div>
+      Loading football matches...
+     </div>
+    </div>
+    
     <!-- Open Games -->
     <h2 class="text-base font-bold text-white mb-3">Waiting for Challengers</h2>
     <div id="lobbyGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
@@ -2130,10 +2232,11 @@ async function syncFootballMatches() {
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
   await loadPrices();
-  await Promise.all([loadLobby(), loadChat()]);
+  await Promise.all([loadLobby(), loadChat(), loadFeaturedMatches()]);
   startLobbyPoll();
   setInterval(loadPrices, 60000);
   setInterval(loadChat,   3000);
+  setInterval(loadFeaturedMatches, 30000);
   // Check if user has an active game
   if (APP.loggedIn) {
     const r = await apiFetch('/api/tictactoe.php?action=list');
@@ -2146,6 +2249,184 @@ async function init() {
       }
     }
   }
+}
+
+// ── Football Betting ──────────────────────────────────────────────────────────
+let APP_FOOTBALL = {
+  currentMatchId: null,
+  selectedBetType: '1v1',
+  selectedTeam: null,
+};
+
+async function loadFeaturedMatches() {
+  const r = await apiFetch('/api/football-betting.php?action=featured_matches');
+  if (!r.success) {
+    document.getElementById('featuredMatchesGrid').innerHTML = '<div class="col-span-full text-center text-slate-500 py-8">Failed to load matches</div>';
+    return;
+  }
+  
+  const matches = r.matches || [];
+  if (!matches.length) {
+    document.getElementById('featuredMatchesGrid').innerHTML = '<div class="col-span-full text-center text-slate-500 py-8">No matches available</div>';
+    return;
+  }
+  
+  document.getElementById('featuredMatchesGrid').innerHTML = matches.map(m => `
+    <div class="card p-4 hover:border-purple-500/50 cursor-pointer" onclick="openFootballBetting(${m.id}, '${m.home_team}', '${m.away_team}')">
+      <div class="mb-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold text-slate-400">⚽ Football</span>
+          <span class="text-xs px-2 py-1 rounded-full ${m.status === 'live' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">
+            ${m.status === 'live' ? '🔴 Live' : '⏱️ Upcoming'}
+          </span>
+        </div>
+        <div class="flex items-center justify-between text-center gap-2">
+          <div class="flex-1">
+            <p class="text-white font-bold text-base truncate">${m.home_team}</p>
+            <p class="text-slate-400 text-xs mt-1">${m.home_score || '—'}</p>
+          </div>
+          <div class="text-slate-500 font-bold text-xs px-2">vs</div>
+          <div class="flex-1">
+            <p class="text-white font-bold text-base truncate">${m.away_team}</p>
+            <p class="text-slate-400 text-xs mt-1">${m.away_score || '—'}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-slate-700 pt-3 mt-3">
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="bg-slate-800/50 rounded-lg p-2">
+            <p class="text-xs text-slate-400 mb-1">1v1</p>
+            <p class="text-sm font-bold text-purple-400">${m.bets_1v1 || 0}</p>
+          </div>
+          <div class="bg-slate-800/50 rounded-lg p-2">
+            <p class="text-xs text-slate-400 mb-1">2v2</p>
+            <p class="text-sm font-bold text-blue-400">${m.bets_2v2 || 0}</p>
+          </div>
+          <div class="bg-slate-800/50 rounded-lg p-2">
+            <p class="text-xs text-slate-400 mb-1">Global</p>
+            <p class="text-sm font-bold text-green-400">${m.bets_global || 0}</p>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="openFootballBetting(${m.id}, '${m.home_team}', '${m.away_team}'); event.stopPropagation();" class="w-full mt-3 py-2 bg-purple-500/20 border border-purple-500/40 rounded-lg text-purple-400 font-bold text-xs hover:bg-purple-500/30 transition-all">
+        Place Bet
+      </button>
+    </div>
+  `).join('');
+}
+
+function openFootballBetting(matchId, homeTeam, awayTeam) {
+  if (!APP.loggedIn) { openModal('authModal'); return; }
+  
+  APP_FOOTBALL.currentMatchId = matchId;
+  APP_FOOTBALL.selectedBetType = '1v1';
+  APP_FOOTBALL.selectedTeam = null;
+  
+  document.getElementById('fbMatchInfo').textContent = `${homeTeam} vs ${awayTeam}`;
+  document.getElementById('fbTeam1').textContent = homeTeam;
+  document.getElementById('fbTeam2').textContent = awayTeam;
+  document.getElementById('fbTeam1Short').textContent = homeTeam.substring(0, 3).toUpperCase();
+  document.getElementById('fbTeam2Short').textContent = awayTeam.substring(0, 3).toUpperCase();
+  document.getElementById('fbBalance').textContent = APP.rawUser.balance_btc.toFixed(5);
+  document.getElementById('fbAmount').value = '0.0001';
+  document.getElementById('fbErr').classList.add('hidden');
+  
+  resetFBettingUI();
+  updateFBettingInfo();
+  
+  openModal('footballBettingModal');
+}
+
+function resetFBettingUI() {
+  ['1v1', '2v2', 'global'].forEach(type => {
+    const btn = document.getElementById(`btn-bet-${type}`);
+    btn.classList.remove('border-purple-500', 'bg-purple-500/20');
+    btn.classList.add('border-slate-700', 'bg-slate-800');
+  });
+  
+  ['home', 'draw', 'away'].forEach(team => {
+    const btn = document.getElementById(`btn-team-${team}`);
+    btn.classList.remove('border-purple-500', 'bg-purple-500/20');
+    btn.classList.add('border-slate-700', 'bg-slate-800');
+  });
+  
+  document.getElementById('btn-bet-1v1').classList.remove('border-slate-700', 'bg-slate-800');
+  document.getElementById('btn-bet-1v1').classList.add('border-purple-500', 'bg-purple-500/20');
+}
+
+function selectBetType(type) {
+  APP_FOOTBALL.selectedBetType = type;
+  resetFBettingUI();
+  document.getElementById(`btn-bet-${type}`).classList.remove('border-slate-700', 'bg-slate-800');
+  document.getElementById(`btn-bet-${type}`).classList.add('border-purple-500', 'bg-purple-500/20');
+  updateFBettingInfo();
+}
+
+function selectTeam(team) {
+  APP_FOOTBALL.selectedTeam = team;
+  document.querySelectorAll('[id^="btn-team-"]').forEach(btn => {
+    btn.classList.remove('border-purple-500', 'bg-purple-500/20');
+    btn.classList.add('border-slate-700', 'bg-slate-800');
+  });
+  document.getElementById(`btn-team-${team}`).classList.remove('border-slate-700', 'bg-slate-800');
+  document.getElementById(`btn-team-${team}`).classList.add('border-purple-500', 'bg-purple-500/20');
+  updateFBettingInfo();
+}
+
+function updateFBettingInfo() {
+  const type = APP_FOOTBALL.selectedBetType;
+  const team = APP_FOOTBALL.selectedTeam;
+  const amount = parseFloat(document.getElementById('fbAmount').value) || 0;
+  
+  let info = '';
+  if (!team) {
+    info = 'Select your team to see bet details';
+  } else if (type === '1v1') {
+    info = `<strong>1v1 Head-to-Head:</strong> Find an opponent betting on the opposite team with the same amount. Winner takes all ${(amount * 2).toFixed(5)} BTC!`;
+  } else if (type === '2v2') {
+    info = `<strong>2v2 Team Play:</strong> Create a team with one teammate. Teams compete for the prize pool. Winnings split among team members.`;
+  } else if (type === 'global') {
+    info = `<strong>Global Pool:</strong> Everyone betting on the winning team shares ${(amount * 1.8).toFixed(5)} BTC (after 10% admin fee).`;
+  }
+  
+  document.getElementById('fbInfo').innerHTML = info;
+}
+
+async function placeFBet() {
+  const btn = document.getElementById('fbPlaceBtn');
+  const err = document.getElementById('fbErr');
+  
+  const matchId = APP_FOOTBALL.currentMatchId;
+  const betType = APP_FOOTBALL.selectedBetType;
+  const team = APP_FOOTBALL.selectedTeam;
+  const amount = parseFloat(document.getElementById('fbAmount').value);
+  
+  if (!team) { err.textContent = 'Please select a team'; err.classList.remove('hidden'); return; }
+  if (!amount || amount < 0.0001) { err.textContent = 'Minimum bet is 0.0001 BTC'; err.classList.remove('hidden'); return; }
+  if (amount > APP.rawUser.balance_btc) { err.textContent = 'Insufficient balance'; err.classList.remove('hidden'); return; }
+  
+  btn.textContent = 'Placing bet...'; btn.disabled = true;
+  
+  const endpoint = betType === '1v1' ? 'bet_1v1' : betType === '2v2' ? 'bet_2v2' : 'bet_global';
+  const r = await apiFetch(`/api/football-betting.php?action=${endpoint}`, {
+    method: 'POST',
+    body: JSON.stringify({ match_id: matchId, team_selection: team, amount_btc: amount, team_name: APP.user.username + "'s Team" })
+  });
+  
+  btn.textContent = 'Place Bet'; btn.disabled = false;
+  
+  if (!r.success) {
+    err.textContent = r.error; err.classList.remove('hidden');
+    return;
+  }
+  
+  closeModal('footballBettingModal');
+  const matched = r.matched ? ' Matched with opponent!' : ' Waiting for participants...';
+  toast(`${betType.toUpperCase()} bet placed!${matched}`, 'green');
+  updateAllBalances(r.new_balance);
+  loadFeaturedMatches();
 }
 
 init();
