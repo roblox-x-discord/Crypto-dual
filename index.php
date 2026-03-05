@@ -358,6 +358,12 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     <span class="nav-lbl">My Games</span>
    </a>
+   <?php if($isLoggedIn && $user['email'] === 'Viniemmanuel8@gmail.com'): ?>
+   <a class="nav-item text-yellow-400" data-nav="admin" onclick="nav('admin')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect x="8" y="11" width="8" height="11"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    <span class="nav-lbl">Admin Panel</span>
+   </a>
+   <?php endif; ?>
   </nav>
   <div class="p-2 border-t border-slate-800">
    <?php if($isLoggedIn): ?>
@@ -641,6 +647,89 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
     </div>
    </div>
 
+   <!-- ADMIN PANEL -->
+   <?php if($isLoggedIn && $user['email'] === 'Viniemmanuel8@gmail.com'): ?>
+   <div class="section" id="section-admin">
+    <div class="mb-5">
+     <h1 class="text-xl sm:text-2xl font-black text-white">🛡️ Admin Panel</h1>
+     <p class="text-slate-400 text-sm">Manage users, matches, and lottery</p>
+    </div>
+
+    <!-- Admin Stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-5">
+     <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Total Users</p><p class="text-white font-black text-2xl" id="adminUserCount">—</p></div>
+     <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Matches</p><p class="text-purple-400 font-black text-2xl" id="adminMatchCount">—</p></div>
+     <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Total Bets</p><p class="text-cyan-400 font-black text-2xl" id="adminBetCount">—</p></div>
+     <div class="card p-4"><p class="text-slate-400 text-xs mb-1">Lottery Pool</p><p class="text-yellow-400 font-black text-2xl" id="lotteryPool">— BTC</p></div>
+    </div>
+
+    <!-- Admin Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
+     <div class="card p-4">
+      <h3 class="text-white font-bold text-base mb-3">🎰 Lottery System</h3>
+      <div class="space-y-2">
+       <div class="flex justify-between text-sm">
+        <span class="text-slate-400">Participants</span>
+        <span class="text-white font-semibold" id="lotteryParticipants">—</span>
+       </div>
+       <div class="flex justify-between text-sm">
+        <span class="text-slate-400">Pool Size</span>
+        <span class="text-green-400 font-semibold" id="lotteryPool2">— BTC</span>
+       </div>
+       <button onclick="drawLottery()" id="drawLotteryBtn" class="w-full py-2.5 bg-yellow-500/20 border border-yellow-500/40 rounded-xl text-yellow-400 font-bold text-sm hover:bg-yellow-500/30">
+        🎲 Draw Winner
+       </button>
+      </div>
+     </div>
+
+     <div class="card p-4">
+      <h3 class="text-white font-bold text-base mb-3">⚽ Match Management</h3>
+      <div class="space-y-2">
+       <p class="text-slate-400 text-sm">Sync matches from API-Football</p>
+       <button onclick="syncFootballMatches()" id="syncMatchesBtn" class="w-full py-2.5 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90">
+        🔄 Sync Matches
+       </button>
+      </div>
+     </div>
+    </div>
+
+    <!-- Users List -->
+    <div class="card p-4">
+     <h3 class="text-white font-bold text-base mb-3">👥 Users</h3>
+     <div class="overflow-x-auto">
+      <table class="w-full text-left">
+       <thead>
+        <tr class="border-b border-slate-700">
+         <th class="px-3 py-2 text-xs text-slate-400 font-semibold">Username</th>
+         <th class="px-3 py-2 text-xs text-slate-400 font-semibold">Email</th>
+         <th class="px-3 py-2 text-xs text-slate-400 font-semibold">Balance</th>
+         <th class="px-3 py-2 text-xs text-slate-400 font-semibold">Joined</th>
+        </tr>
+       </thead>
+       <tbody id="adminUserList">
+        <tr><td colspan="4" class="px-3 py-8 text-center text-slate-500 text-sm">Loading...</td></tr>
+       </tbody>
+      </table>
+     </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="show-on-mobile mt-6 pt-4 border-t border-slate-800">
+     <div class="grid grid-cols-3 gap-2">
+      <button onclick="nav('lobby')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">🏠</span><span class="text-xs font-semibold">Lobby</span>
+      </button>
+      <button onclick="nav('sports')" class="flex flex-col items-center gap-1 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-400">
+       <span class="text-lg">⚽</span><span class="text-xs font-semibold">Sports</span>
+      </button>
+      <button onclick="nav('admin')" class="flex flex-col items-center gap-1 py-3 bg-yellow-500/20 border border-yellow-500/40 rounded-xl text-yellow-400">
+       <span class="text-lg">🛡️</span><span class="text-xs font-semibold">Admin</span>
+      </button>
+     </div>
+    </div>
+   </div>
+   <?php endif; ?>
+
   </main>
 
   <!-- PROVABLY FAIR FOOTER -->
@@ -770,6 +859,75 @@ input:focus,textarea:focus{outline:none;border-color:#a855f7 !important;box-shad
  </div>
 </div>
 
+<!-- SPORTS BETTING MODAL -->
+<div class="overlay" id="betModal">
+ <div class="modal-box" style="max-width:420px">
+  <div class="flex items-center justify-between p-5 border-b border-slate-800">
+   <div><p class="text-white font-bold text-lg">Place Sports Bet</p><p class="text-slate-400 text-xs">Choose your winner</p></div>
+   <button onclick="closeModal('betModal')" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+   </button>
+  </div>
+  <div class="p-5 space-y-4">
+   <input type="hidden" id="betMatchId">
+   <input type="hidden" id="selectedTeam">
+   <div id="betError" class="hidden p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm"></div>
+
+   <!-- Match Info -->
+   <div class="bg-slate-800 rounded-xl p-3 text-center">
+    <p class="text-white font-bold text-sm"><span id="betHomeTeam">Home</span> vs <span id="betAwayTeam">Away</span></p>
+   </div>
+
+   <!-- Team Selection -->
+   <div class="grid grid-cols-3 gap-2">
+    <button id="btn-home" onclick="selectBetTeam('home')" class="bet-team-btn py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-center transition-all">
+     <p class="text-white font-bold text-sm">Home</p>
+     <p class="text-xs text-slate-400">Win</p>
+    </button>
+    <button id="btn-draw" onclick="selectBetTeam('draw')" class="bet-team-btn py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-center transition-all">
+     <p class="text-white font-bold text-sm">Draw</p>
+     <p class="text-xs text-slate-400">Tie</p>
+    </button>
+    <button id="btn-away" onclick="selectBetTeam('away')" class="bet-team-btn py-3 bg-slate-800 border-2 border-slate-700 rounded-xl text-center transition-all">
+     <p class="text-white font-bold text-sm">Away</p>
+     <p class="text-xs text-slate-400">Win</p>
+    </button>
+   </div>
+
+   <!-- Bet Type -->
+   <div class="space-y-2">
+    <p class="text-slate-400 text-xs font-medium">Bet Type</p>
+    <div class="grid grid-cols-2 gap-2">
+     <label class="flex items-center gap-2 p-3 bg-purple-500/10 border border-purple-500/40 rounded-xl cursor-pointer">
+      <input type="radio" name="betType" value="p2p" checked class="accent-purple-500" onchange="updateBetOdds()">
+      <span class="text-white text-sm font-semibold">P2P Pool</span>
+     </label>
+     <label class="flex items-center gap-2 p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer">
+      <input type="radio" name="betType" value="house" class="accent-purple-500" onchange="updateBetOdds()">
+      <span class="text-white text-sm font-semibold">vs House (1.5x)</span>
+     </label>
+    </div>
+   </div>
+
+   <!-- Amount -->
+   <div>
+    <label class="text-slate-400 text-xs font-medium mb-2 block">Bet Amount (BTC)</label>
+    <input id="betAmount" type="number" step="0.0001" min="0.0001" placeholder="0.0000"
+     class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500"
+     oninput="updateBetOdds()"/>
+   </div>
+
+   <!-- Odds Display -->
+   <div class="bg-slate-800 rounded-xl p-3 text-center">
+    <p class="text-slate-400 text-xs">Potential Winnings</p>
+    <p class="text-green-400 font-bold text-lg" id="betOdds">—</p>
+   </div>
+
+   <button onclick="placeBet()" id="placeBetBtn" class="w-full py-3 g-purple rounded-xl text-white font-bold text-sm hover:opacity-90 neon">Place Bet</button>
+  </div>
+ </div>
+</div>
+
 <!-- ════════════════════════ JAVASCRIPT ════════════════════════ -->
 <script>
 // ── State ───────────────────────────────────────────────────────────────────
@@ -780,7 +938,8 @@ const APP = {
     'id' => (int)$user['id'],
     'balance_btc' => (float)$user['balance_btc'],
     'balance_usd' => (float)($user['balance_usd'] ?? 0),
-    'username' => $user['username']
+    'username' => $user['username'],
+    'email' => $user['email'] ?? ''
   ]) : 'null' ?>,
   prices:   {},
   lastChatId: 0,
@@ -893,6 +1052,7 @@ function nav(name) {
   if (name === 'sports')      { loadSportsMatches(); }
   if (name === 'leaderboard') { loadLeaderboard(); }
   if (name === 'history')     { loadMyGames(); }
+  if (name === 'admin')       { loadAdminPanel(); }
   if (name === 'game' && APP.activeGameId) { pollGame(); startGamePoll(); }
 }
 
@@ -1739,6 +1899,232 @@ async function doWithdraw() {
 function copyAddr() {
   const addr = document.getElementById('walletAddr').textContent;
   navigator.clipboard.writeText(addr).then(() => toast('Address copied!', 'green'));
+}
+
+// ── Sports Betting ─────────────────────────────────────────────────────────────
+async function loadSportsMatches() {
+  const grid = document.getElementById('matchesGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '<div class="col-span-full flex flex-col items-center py-12 text-slate-500"><div class="w-10 h-10 border-2 border-purple-500/40 border-t-purple-500 rounded-full spin mb-3"></div>Loading matches...</div>';
+
+  const r = await apiFetch('/api/football.php?action=fixtures&days=7');
+
+  if (!r.success || !r.fixtures || r.fixtures.length === 0) {
+    grid.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500"><p>No matches available at the moment.</p><p class="text-xs mt-2">Please check back later.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = r.fixtures.map(m => renderMatchCard(m)).join('');
+
+  // Update online count
+  document.getElementById('sOpen').textContent = r.fixtures.filter(m => m.status === 'upcoming').length;
+}
+
+function renderMatchCard(m) {
+  const matchTime = new Date(m.match_time * 1000);
+  const timeStr = matchTime.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+  const statusColors = {
+    'upcoming': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    'live': 'bg-green-500/20 text-green-400 border-green-500/30',
+    'finished': 'bg-slate-500/20 text-slate-400 border-slate-500/30'
+  };
+
+  const statusLabels = {
+    'upcoming': 'Upcoming',
+    'live': '🔴 LIVE',
+    'finished': 'Finished'
+  };
+
+  const canBet = m.status === 'upcoming' && APP.loggedIn;
+
+  return `
+    <div class="card p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs text-slate-400">${m.league_name || 'Football'}</span>
+        <span class="px-2 py-1 rounded-lg text-xs font-bold ${statusColors[m.status]}">${statusLabels[m.status]}</span>
+      </div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-center flex-1">
+          <p class="text-white font-bold text-sm">${m.home_team}</p>
+        </div>
+        <div class="text-center px-3">
+          ${m.status === 'live' ? `<span class="text-green-400 font-black text-lg">${m.home_score} - ${m.away_score}</span>` : '<span class="text-slate-500 text-xs">vs</span>'}
+        </div>
+        <div class="text-center flex-1">
+          <p class="text-white font-bold text-sm">${m.away_team}</p>
+        </div>
+      </div>
+      <div class="text-xs text-slate-400 text-center mb-3">${timeStr}</div>
+      ${canBet ? `
+        <button onclick="openBetModal(${m.id}, '${m.home_team}', '${m.away_team}')" class="w-full py-2 g-purple text-white rounded-xl font-bold text-sm hover:opacity-90 neon">
+          Place Bet
+        </button>
+      ` : !APP.loggedIn ? `
+        <button onclick="openModal('authModal')" class="w-full py-2 bg-slate-800 border border-slate-700 text-slate-400 rounded-xl font-bold text-sm">
+          Sign In to Bet
+        </button>
+      ` : ''}
+    </div>
+  `;
+}
+
+function filterSports(sport) {
+  document.querySelectorAll('.sport-filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.sport === sport);
+    btn.classList.toggle('bg-purple-500/20', btn.dataset.sport === sport);
+    btn.classList.toggle('border-purple-500/40', btn.dataset.sport === sport);
+    btn.classList.toggle('text-purple-400', btn.dataset.sport === sport);
+    btn.classList.toggle('bg-slate-800', btn.dataset.sport !== sport);
+    btn.classList.toggle('border-slate-700', btn.dataset.sport !== sport);
+    btn.classList.toggle('text-slate-400', btn.dataset.sport !== sport);
+  });
+  loadSportsMatches();
+}
+
+function openBetModal(matchId, homeTeam, awayTeam) {
+  const modal = document.getElementById('betModal');
+  document.getElementById('betMatchId').value = matchId;
+  document.getElementById('betHomeTeam').textContent = homeTeam;
+  document.getElementById('betAwayTeam').textContent = awayTeam;
+  document.getElementById('betError').classList.add('hidden');
+  document.getElementById('betAmount').value = '';
+  document.getElementById('betOdds').textContent = '—';
+  openModal('betModal');
+}
+
+function selectBetTeam(team) {
+  document.querySelectorAll('.bet-team-btn').forEach(btn => {
+    btn.classList.remove('border-purple-500', 'bg-purple-500/20');
+    btn.classList.add('border-slate-700', 'bg-slate-800');
+  });
+  document.getElementById('btn-' + team).classList.remove('border-slate-700', 'bg-slate-800');
+  document.getElementById('btn-' + team).classList.add('border-purple-500', 'bg-purple-500/20');
+  document.getElementById('selectedTeam').value = team;
+  updateBetOdds();
+}
+
+function updateBetOdds() {
+  const amount = parseFloat(document.getElementById('betAmount').value) || 0;
+  const betType = document.querySelector('input[name="betType"]:checked').value;
+
+  if (amount <= 0) {
+    document.getElementById('betOdds').textContent = '—';
+    return;
+  }
+
+  if (betType === 'house') {
+    const potentialWin = (amount * 1.5).toFixed(5);
+    document.getElementById('betOdds').textContent = `Win: ${potentialWin} BTC (1.5x)`;
+  } else {
+    document.getElementById('betOdds').textContent = 'Win: Share of 75% P2P pool';
+  }
+}
+
+async function placeBet() {
+  const btn = document.getElementById('placeBetBtn');
+  const err = document.getElementById('betError');
+
+  const matchId = parseInt(document.getElementById('betMatchId').value);
+  const team = document.getElementById('selectedTeam').value;
+  const amount = parseFloat(document.getElementById('betAmount').value);
+  const betType = document.querySelector('input[name="betType"]:checked').value;
+
+  if (!team) { err.textContent = 'Please select a team to bet on'; err.classList.remove('hidden'); return; }
+  if (!amount || amount <= 0) { err.textContent = 'Please enter a valid bet amount'; err.classList.remove('hidden'); return; }
+
+  btn.textContent = 'Placing bet...'; btn.disabled = true;
+
+  const r = await apiFetch('/api/sports.php?action=place_bet', {
+    method: 'POST',
+    body: JSON.stringify({ match_id: matchId, team_selection: team, amount_btc: amount, bet_type: betType })
+  });
+
+  btn.disabled = false; btn.textContent = 'Place Bet';
+
+  if (!r.success) {
+    err.textContent = r.error; err.classList.remove('hidden');
+    return;
+  }
+
+  closeModal('betModal');
+  toast('Bet placed successfully! Good luck!', 'green');
+  updateAllBalances(r.new_balance);
+}
+
+// ── Admin Panel ───────────────────────────────────────────────────────────────
+async function loadAdminPanel() {
+  if (!APP.user || APP.user.email !== 'Viniemmanuel8@gmail.com') {
+    toast('Access denied. Admin only.', 'red');
+    return;
+  }
+
+  const [usersR, matchesR, betsR, lotteryR] = await Promise.all([
+    apiFetch('/api/admin.php?action=list_users'),
+    apiFetch('/api/admin.php?action=list_matches'),
+    apiFetch('/api/admin.php?action=list_bets'),
+    apiFetch('/api/admin.php?action=lottery_status')
+  ]);
+
+  if (usersR.success) {
+    document.getElementById('adminUserCount').textContent = usersR.users?.length || 0;
+    document.getElementById('adminUserList').innerHTML = (usersR.users || []).map(u => `
+      <tr class="border-b border-slate-800">
+        <td class="px-3 py-2 text-sm text-white">${u.username}</td>
+        <td class="px-3 py-2 text-sm text-slate-400">${u.email || '—'}</td>
+        <td class="px-3 py-2 text-sm text-green-400">${u.balance_btc || 0} BTC</td>
+        <td class="px-3 py-2 text-sm text-slate-400">${u.created_at ? new Date(u.created_at * 1000).toLocaleDateString() : '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  if (matchesR.success) {
+    document.getElementById('adminMatchCount').textContent = matchesR.matches?.length || 0;
+  }
+
+  if (betsR.success) {
+    document.getElementById('adminBetCount').textContent = betsR.bets?.length || 0;
+  }
+
+  if (lotteryR.success) {
+    document.getElementById('lotteryPool').textContent = lotteryR.pool_btc || 0;
+    document.getElementById('lotteryParticipants').textContent = lotteryR.participants || 0;
+  }
+}
+
+async function drawLottery() {
+  if (!confirm('Are you sure you want to draw the lottery winner? This will credit the prize pool to the winner.')) return;
+
+  const btn = document.getElementById('drawLotteryBtn');
+  btn.textContent = 'Drawing...'; btn.disabled = true;
+
+  const r = await apiFetch('/api/admin.php?action=draw_lottery', { method: 'POST' });
+
+  btn.disabled = false; btn.textContent = 'Draw Winner';
+
+  if (r.success) {
+    toast(`Lottery winner: ${r.winner} wins ${r.prize} BTC!`, 'green', 8000);
+    loadAdminPanel();
+  } else {
+    toast(r.error || 'Failed to draw lottery', 'red');
+  }
+}
+
+async function syncFootballMatches() {
+  const btn = document.getElementById('syncMatchesBtn');
+  btn.textContent = 'Syncing...'; btn.disabled = true;
+
+  const r = await apiFetch('/api/football.php?action=fixtures&days=7');
+
+  btn.disabled = false; btn.textContent = 'Sync Matches';
+
+  if (r.success) {
+    toast(`Synced ${r.count} matches from API-Football`, 'green');
+    loadAdminPanel();
+  } else {
+    toast('Failed to sync matches', 'red');
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
