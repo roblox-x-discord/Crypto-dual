@@ -50,6 +50,10 @@ if ($method === 'GET' && $action === 'fixtures') {
         jsonOk(['fixtures' => $mockFixtures, 'source' => 'mock']);
     }
 
+
+    // If empty response, return mock data so users can see betting interface
+    if (empty($data['response']) || count($data['response']) === 0) {
+        $mockFixtures = getMockFixtures();        jsonOK(['fixtures' => $mockFixtures, 'source' => 'mock']);    }
     $fixtures = [];
     $db = getDB();
 
