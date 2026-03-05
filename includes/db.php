@@ -157,6 +157,38 @@ function initTables(SQLite3 $db): void {
     CREATE INDEX IF NOT EXISTS idx_sports_fixture   ON sports_matches(api_fixture_id);
     CREATE INDEX IF NOT EXISTS idx_sports_bets_user ON sports_bets(user_id);
     CREATE INDEX IF NOT EXISTS idx_sports_bets_match ON sports_bets(match_id);
+
+    CREATE TABLE IF NOT EXISTS football_pools (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        match_id        INTEGER NOT NULL REFERENCES sports_matches(id),
+        bet_type        TEXT    NOT NULL,
+        team_selection  TEXT    NOT NULL,
+        user1_id        INTEGER NOT NULL REFERENCES users(id),
+        user2_id        INTEGER REFERENCES users(id),
+        amount_btc      REAL    NOT NULL,
+        pool_total      REAL    DEFAULT 0,
+        status          TEXT    DEFAULT 'open',
+        winner_id       INTEGER REFERENCES users(id),
+        admin_cut       REAL    DEFAULT 0,
+        created_at      INTEGER DEFAULT (strftime('%s','now')),
+        settled_at      INTEGER
+    );
+
+    CREATE TABLE IF NOT EXISTS football_2v2_teams (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        pool_id         INTEGER NOT NULL REFERENCES football_pools(id),
+        team_name       TEXT    NOT NULL,
+        member1_id      INTEGER NOT NULL REFERENCES users(id),
+        member2_id      INTEGER REFERENCES users(id),
+        total_amount    REAL    DEFAULT 0,
+        created_at      INTEGER DEFAULT (strftime('%s','now')')
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_football_pools_match   ON football_pools(match_id);
+    CREATE INDEX IF NOT EXISTS idx_football_pools_status  ON football_pools(status);
+    CREATE INDEX IF NOT EXISTS idx_football_pools_user1   ON football_pools(user1_id);
+    CREATE INDEX IF NOT EXISTS idx_football_pools_type    ON football_pools(bet_type);
+    CREATE INDEX IF NOT EXISTS idx_football_2v2_pool      ON football_2v2_teams(pool_id);
     ");
 }
 
